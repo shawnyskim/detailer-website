@@ -33,8 +33,7 @@ export async function POST(request: Request) {
           Website: website || '',
           Revenue: revenue,
           Email: email,
-          Phone: phone,
-          Status: 'New'
+          Phone: phone
         }
       }
     ]);
