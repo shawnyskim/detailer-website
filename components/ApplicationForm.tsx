@@ -16,6 +16,8 @@ export default function ApplicationForm() {
     phone: ''
   });
   const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState('');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({
@@ -24,24 +26,55 @@ export default function ApplicationForm() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    setSubmitted(true);
+    setIsSubmitting(true);
+    setError('');
 
-    // Reset form after 5 seconds
-    setTimeout(() => {
-      setSubmitted(false);
-      setFormData({
-        name: '',
-        businessName: '',
-        city: '',
-        website: '',
-        revenue: '',
-        email: '',
-        phone: ''
+    try {
+      // Normalize website URL - add https:// if not present
+      const normalizedData = {
+        ...formData,
+        website: formData.website && !formData.website.match(/^https?:\/\//)
+          ? `https://${formData.website}`
+          : formData.website
+      };
+
+      const response = await fetch('/api/submit-application', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(normalizedData),
       });
-    }, 5000);
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to submit application');
+      }
+
+      setSubmitted(true);
+
+      // Reset form after 5 seconds
+      setTimeout(() => {
+        setSubmitted(false);
+        setFormData({
+          name: '',
+          businessName: '',
+          city: '',
+          website: '',
+          revenue: '',
+          email: '',
+          phone: ''
+        });
+      }, 5000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to submit application');
+      console.error('Submission error:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -66,7 +99,7 @@ export default function ApplicationForm() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="name" className="block text-sm font-medium mb-2">
-                Your name
+                Your name<span className="text-accent ml-1">*</span>
               </label>
               <input
                 type="text"
@@ -81,7 +114,7 @@ export default function ApplicationForm() {
 
             <div>
               <label htmlFor="businessName" className="block text-sm font-medium mb-2">
-                Business name
+                Business name<span className="text-accent ml-1">*</span>
               </label>
               <input
                 type="text"
@@ -96,7 +129,7 @@ export default function ApplicationForm() {
 
             <div>
               <label htmlFor="city" className="block text-sm font-medium mb-2">
-                City
+                City<span className="text-accent ml-1">*</span>
               </label>
               <input
                 type="text"
@@ -114,19 +147,19 @@ export default function ApplicationForm() {
                 Current website URL (if any)
               </label>
               <input
-                type="url"
+                type="text"
                 id="website"
                 name="website"
                 value={formData.website}
                 onChange={handleChange}
-                placeholder="https://"
+                placeholder="example.com or www.example.com"
                 className="w-full px-4 py-3 bg-bg-secondary border border-border-color rounded-lg focus:outline-none focus:border-accent transition-colors text-text-primary placeholder:text-text-secondary"
               />
             </div>
 
             <div>
               <label htmlFor="revenue" className="block text-sm font-medium mb-2">
-                Monthly revenue (rough estimate)
+                Monthly revenue (rough estimate)<span className="text-accent ml-1">*</span>
               </label>
               <select
                 id="revenue"
@@ -137,17 +170,17 @@ export default function ApplicationForm() {
                 className="w-full px-4 py-3 bg-bg-secondary border border-border-color rounded-lg focus:outline-none focus:border-accent transition-colors text-text-primary"
               >
                 <option value="">Select range...</option>
-                <option value="under-5k">Under $5K</option>
-                <option value="5-10k">$5-10K</option>
-                <option value="10-20k">$10-20K</option>
-                <option value="20-50k">$20-50K</option>
-                <option value="50k+">$50K+</option>
+                <option value="Under $5K">Under $5K</option>
+                <option value="$5-10K">$5-10K</option>
+                <option value="$10-20K">$10-20K</option>
+                <option value="$20-50K">$20-50K</option>
+                <option value="$50K+">$50K+</option>
               </select>
             </div>
 
             <div>
               <label htmlFor="email" className="block text-sm font-medium mb-2">
-                Email
+                Email<span className="text-accent ml-1">*</span>
               </label>
               <input
                 type="email"
@@ -162,7 +195,7 @@ export default function ApplicationForm() {
 
             <div>
               <label htmlFor="phone" className="block text-sm font-medium mb-2">
-                Phone
+                Phone<span className="text-accent ml-1">*</span>
               </label>
               <input
                 type="tel"
@@ -175,8 +208,14 @@ export default function ApplicationForm() {
               />
             </div>
 
-            <Button type="submit" className="w-full">
-              Submit application
+            {error && (
+              <div className="bg-red-500/10 border border-red-500 rounded-lg p-4 text-center">
+                <p className="text-red-500">{error}</p>
+              </div>
+            )}
+
+            <Button type="submit" className="w-full" disabled={isSubmitting}>
+              {isSubmitting ? 'Submitting...' : 'Book my spot'}
             </Button>
 
             <p className="text-sm text-text-secondary text-center">

@@ -42,7 +42,7 @@ export default function PricingSection() {
             </li>
             <li className="flex items-start">
               <span className="text-accent mr-3">•</span>
-              <span>Everything on the DetailStack platform included</span>
+              <span>Everything on the DetailerStack platform included</span>
             </li>
           </ul>
         </div>

@@ -1,0 +1,1962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DetailStack Demo - Premium Auto Detailing</title>
+  <meta name="description" content="Los Angeles's premier auto detailing studio. Experience the art of automotive excellence.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --obsidian-300: #a8a8a8;
+      --obsidian-400: #737373;
+      --obsidian-500: #525252;
+      --obsidian-600: #404040;
+      --obsidian-700: #303030;
+      --obsidian-800: #1f1f1f;
+      --obsidian-900: #141414;
+      --obsidian-950: #0a0a0a;
+      --champagne-400: #d4b896;
+      --champagne-500: #c9a66b;
+      --champagne-600: #b8935a;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: var(--obsidian-950);
+      color: #fff;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .font-display {
+      font-family: 'Oswald', Impact, sans-serif;
+      font-weight: 500;
+    }
+
+    .text-gradient-gold {
+      background: linear-gradient(135deg, var(--champagne-400) 0%, var(--champagne-500) 50%, var(--champagne-600) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .glass {
+      background: rgba(20, 20, 20, 0.8);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .glass-light {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.875rem 1.5rem;
+      background: linear-gradient(135deg, var(--champagne-500), var(--champagne-600));
+      color: var(--obsidian-950);
+      font-weight: 600;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 0 30px rgba(220, 187, 130, 0.4);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.875rem 1.5rem;
+      border: 1px solid var(--obsidian-700);
+      color: #fff;
+      font-weight: 500;
+      border-radius: 2px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+      border-color: rgba(220, 187, 130, 0.5);
+      background: var(--obsidian-900);
+    }
+
+    .card-glass {
+      background: rgba(20, 20, 20, 0.5);
+      border: 1px solid var(--obsidian-800);
+      border-radius: 2px;
+      backdrop-filter: blur(8px);
+    }
+
+    .glow-gold {
+      box-shadow: 0 0 30px rgba(220, 187, 130, 0.15);
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* Header */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 50;
+      padding: 1rem 0;
+      transition: all 0.5s ease;
+    }
+
+    .header.scrolled {
+      background: rgba(20, 20, 20, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.75rem 0;
+    }
+
+    .header nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, var(--champagne-400), var(--champagne-600));
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.25rem;
+      color: var(--obsidian-950);
+      letter-spacing: 0.1em;
+    }
+
+    .logo-text {
+      display: none;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 0.2em;
+    }
+
+    .logo-text span:first-child { color: #fff; }
+    .logo-text span:last-child { color: var(--champagne-400); }
+
+    @media (min-width: 640px) {
+      .logo-text { display: block; }
+    }
+
+    .nav-links {
+      display: none;
+      align-items: center;
+      gap: 2rem;
+    }
+
+    @media (min-width: 1024px) {
+      .nav-links { display: flex; }
+    }
+
+    .nav-link {
+      position: relative;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--obsidian-300);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .nav-link:hover { color: #fff; }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--champagne-500);
+      transition: width 0.3s ease;
+    }
+
+    .nav-link:hover::after { width: 100%; }
+
+    .nav-cta {
+      display: none;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    @media (min-width: 1024px) {
+      .nav-cta { display: flex; }
+    }
+
+    .nav-phone {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--obsidian-400);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .nav-phone:hover { color: var(--champagne-400); }
+
+    .mobile-menu-btn {
+      display: block;
+      padding: 0.5rem;
+      background: transparent;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    @media (min-width: 1024px) {
+      .mobile-menu-btn { display: none; }
+    }
+
+    /* Mobile Menu */
+    .mobile-menu {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: var(--obsidian-950);
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+    }
+
+    .mobile-menu.open { transform: translateX(0); }
+
+    .mobile-menu-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.5rem;
+      border-bottom: 1px solid var(--obsidian-800);
+    }
+
+    .mobile-menu-nav {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: calc(100vh - 80px);
+      gap: 2rem;
+    }
+
+    .mobile-nav-link {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.875rem;
+      letter-spacing: 0.1em;
+      color: #fff;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .mobile-nav-link:hover { color: var(--champagne-400); }
+
+    /* Hero Section */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+    }
+
+    .hero-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, var(--obsidian-950), rgba(10, 10, 10, 0.9), var(--obsidian-950));
+      z-index: 10;
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px;
+      height: 800px;
+      background: rgba(220, 187, 130, 0.05);
+      border-radius: 50%;
+      filter: blur(120px);
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      opacity: 0.03;
+      background-image: linear-gradient(rgba(220, 187, 130, 0.3) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(220, 187, 130, 0.3) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 20;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 8rem 1.5rem;
+    }
+
+    .hero-grid-layout {
+      display: grid;
+      gap: 3rem;
+      align-items: center;
+    }
+
+    @media (min-width: 1024px) {
+      .hero-grid-layout {
+        grid-template-columns: 1fr 1fr;
+        gap: 5rem;
+      }
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-bottom: 2rem;
+    }
+
+    .hero-badge-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--champagne-500);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .hero-badge-text {
+      font-size: 0.875rem;
+      color: var(--obsidian-300);
+    }
+
+    .hero-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(3rem, 8vw, 6rem);
+      font-weight: 500;
+      line-height: 0.9;
+      letter-spacing: 0.02em;
+      margin-bottom: 2rem;
+    }
+
+    .hero-description {
+      font-size: 1.125rem;
+      color: var(--obsidian-400);
+      max-width: 32rem;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .hero-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .hero-buttons .btn-primary,
+    .hero-buttons .btn-secondary {
+      width: 100%;
+      max-width: 280px;
+      justify-content: center;
+    }
+
+    @media (min-width: 640px) {
+      .hero-buttons {
+        flex-direction: row;
+        flex-wrap: wrap;
+      }
+      .hero-buttons .btn-primary,
+      .hero-buttons .btn-secondary {
+        width: auto;
+        min-width: 200px;
+      }
+    }
+
+    .play-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(201, 166, 107, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hero-trust {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      padding-top: 1rem;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--obsidian-400);
+    }
+
+    .trust-item svg {
+      width: 16px;
+      height: 16px;
+      color: var(--champagne-500);
+    }
+
+    /* Hero Image */
+    .hero-image-wrapper {
+      display: none;
+      position: relative;
+    }
+
+    @media (min-width: 1024px) {
+      .hero-image-wrapper { display: block; }
+    }
+
+    .hero-image-container {
+      position: relative;
+      aspect-ratio: 4/3;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .hero-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s ease;
+    }
+
+    .hero-image-container:hover .hero-image {
+      transform: scale(1.05);
+    }
+
+    .hero-image-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(10, 10, 10, 0.4), transparent, rgba(10, 10, 10, 0.6));
+    }
+
+    .hero-image-bottom {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 33%;
+      background: linear-gradient(to top, var(--obsidian-950), transparent);
+    }
+
+    .hero-corner-tl {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 80px;
+      height: 80px;
+      border-left: 2px solid rgba(220, 187, 130, 0.3);
+      border-top: 2px solid rgba(220, 187, 130, 0.3);
+    }
+
+    .hero-corner-br {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 80px;
+      height: 80px;
+      border-right: 2px solid rgba(220, 187, 130, 0.3);
+      border-bottom: 2px solid rgba(220, 187, 130, 0.3);
+    }
+
+    .hero-stats-card {
+      position: absolute;
+      left: -2rem;
+      bottom: 3rem;
+      padding: 1.5rem;
+      background: rgba(20, 20, 20, 0.8);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      box-shadow: 0 0 30px rgba(220, 187, 130, 0.15);
+    }
+
+    .hero-stats-number {
+      font-family: 'Oswald', sans-serif;
+      font-size: 2.5rem;
+      color: var(--champagne-400);
+    }
+
+    .hero-stats-label {
+      font-size: 0.875rem;
+      color: var(--obsidian-400);
+    }
+
+    /* Scroll Indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--obsidian-500);
+    }
+
+    .scroll-text {
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 32px;
+      background: linear-gradient(to bottom, var(--champagne-500), transparent);
+      animation: scroll-pulse 2s infinite;
+    }
+
+    @keyframes scroll-pulse {
+      0%, 100% { opacity: 1; transform: scaleY(1); }
+      50% { opacity: 0.5; transform: scaleY(0.8); }
+    }
+
+    /* Stats Section */
+    .stats-section {
+      position: relative;
+      padding: 5rem 0;
+      border-top: 1px solid rgba(31, 31, 31, 0.5);
+      border-bottom: 1px solid rgba(31, 31, 31, 0.5);
+      background: linear-gradient(to right, var(--obsidian-950), rgba(20, 20, 20, 0.5), var(--obsidian-950));
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem;
+    }
+
+    @media (min-width: 1024px) {
+      .stats-grid { grid-template-columns: repeat(4, 1fr); gap: 3rem; }
+    }
+
+    .stat-item {
+      text-align: center;
+    }
+
+    .stat-value {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 3.5rem);
+      background: linear-gradient(135deg, var(--champagne-400), var(--champagne-500), var(--champagne-600));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      font-size: 0.875rem;
+      color: var(--obsidian-400);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* Section Headers */
+    .section-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .section-label {
+      font-size: 0.875rem;
+      color: var(--champagne-500);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+
+    .section-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      margin-bottom: 1.5rem;
+    }
+
+    .section-description {
+      color: var(--obsidian-400);
+      max-width: 42rem;
+      margin: 0 auto;
+    }
+
+    /* Packages Section */
+    .packages-section {
+      position: relative;
+      padding: 6rem 0;
+      background: var(--obsidian-950);
+    }
+
+    .packages-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(220, 187, 130, 0.2), transparent);
+    }
+
+    .packages-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .packages-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 1024px) {
+      .packages-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .package-card {
+      position: relative;
+      padding: 2rem;
+      background: rgba(20, 20, 20, 0.5);
+      border: 1px solid var(--obsidian-800);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .package-card:hover {
+      border-color: rgba(220, 187, 130, 0.3);
+    }
+
+    .package-card.popular {
+      border-color: rgba(201, 166, 107, 0.5);
+    }
+
+    .package-badge {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 0.25rem 1rem;
+      background: #3d3d3d;
+      border: 1px solid #4a4a4a;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      color: #c9c9c9;
+    }
+
+    .package-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--obsidian-800);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--obsidian-400);
+      margin-bottom: 1.5rem;
+    }
+
+    .package-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .package-name {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.25rem;
+      color: #fff;
+    }
+
+    .package-price {
+      color: var(--champagne-400);
+      font-weight: 500;
+    }
+
+    .package-description {
+      font-size: 0.875rem;
+      color: var(--obsidian-400);
+      margin-bottom: 1.5rem;
+    }
+
+    .package-features {
+      list-style: none;
+      margin-bottom: 2rem;
+    }
+
+    .package-features li {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--obsidian-300);
+      margin-bottom: 0.75rem;
+    }
+
+    .package-features li::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--champagne-500);
+      border-radius: 50%;
+    }
+
+    .package-btn {
+      width: 100%;
+      padding: 0.75rem;
+      border-radius: 2px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .package-btn.primary {
+      background: linear-gradient(135deg, var(--champagne-500), var(--champagne-600));
+      color: var(--obsidian-950);
+      border: none;
+    }
+
+    .package-btn.primary:hover {
+      box-shadow: 0 0 20px rgba(220, 187, 130, 0.3);
+    }
+
+    .package-btn.secondary {
+      background: transparent;
+      color: #fff;
+      border: 1px solid var(--obsidian-700);
+    }
+
+    .package-btn.secondary:hover {
+      border-color: rgba(220, 187, 130, 0.5);
+      background: var(--obsidian-900);
+    }
+
+    /* Gallery Section */
+    .gallery-section {
+      position: relative;
+      padding: 6rem 0;
+      background: var(--obsidian-950);
+    }
+
+    .filter-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 3rem;
+    }
+
+    .filter-tab {
+      padding: 0.5rem 1.25rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: 1px solid var(--obsidian-700);
+      background: transparent;
+      color: var(--obsidian-400);
+    }
+
+    .filter-tab:hover {
+      border-color: rgba(220, 187, 130, 0.5);
+      color: #fff;
+    }
+
+    .filter-tab.active {
+      background: var(--champagne-500);
+      color: var(--obsidian-950);
+      border-color: var(--champagne-500);
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 1024px) {
+      .gallery-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .gallery-item {
+      position: relative;
+      aspect-ratio: 4/3;
+      border-radius: 2px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .gallery-item.large {
+      grid-row: span 2;
+      aspect-ratio: auto;
+    }
+
+    @media (max-width: 767px) {
+      .gallery-item.large { grid-row: span 1; aspect-ratio: 4/3; }
+    }
+
+    .gallery-item img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s ease;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.1);
+    }
+
+    .gallery-item-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, var(--obsidian-950), rgba(10, 10, 10, 0.2), transparent);
+      opacity: 0.6;
+      transition: opacity 0.3s ease;
+    }
+
+    .gallery-item:hover .gallery-item-overlay {
+      opacity: 0.8;
+    }
+
+    .gallery-item-content {
+      position: absolute;
+      inset: 0;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .gallery-item-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.125rem;
+      color: #fff;
+    }
+
+    .gallery-item-desc {
+      font-size: 0.875rem;
+      color: var(--obsidian-400);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .gallery-item:hover .gallery-item-desc {
+      opacity: 1;
+    }
+
+    /* Testimonials Section */
+    .testimonials-section {
+      position: relative;
+      padding: 6rem 0;
+      background: var(--obsidian-950);
+    }
+
+    .testimonials-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .testimonials-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 1024px) {
+      .testimonials-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .testimonial-card {
+      padding: 1.5rem;
+      background: rgba(20, 20, 20, 0.5);
+      border: 1px solid var(--obsidian-800);
+      border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+
+    .testimonial-card:hover {
+      border-color: rgba(220, 187, 130, 0.3);
+    }
+
+    .testimonial-stars {
+      display: flex;
+      gap: 0.25rem;
+      margin-bottom: 1rem;
+    }
+
+    .testimonial-stars svg {
+      width: 16px;
+      height: 16px;
+      color: var(--champagne-500);
+      fill: var(--champagne-500);
+    }
+
+    .testimonial-quote-icon {
+      margin-left: auto;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.5rem;
+      color: rgba(220, 187, 130, 0.5);
+    }
+
+    .testimonial-text {
+      color: var(--obsidian-300);
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--obsidian-800);
+    }
+
+    .testimonial-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--obsidian-800);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--champagne-500);
+      font-weight: 500;
+    }
+
+    .testimonial-name {
+      font-weight: 500;
+      color: #fff;
+    }
+
+    .testimonial-vehicle {
+      font-size: 0.875rem;
+      color: var(--obsidian-400);
+    }
+
+    .testimonial-location {
+      margin-top: 1rem;
+      font-size: 0.75rem;
+      color: var(--obsidian-500);
+    }
+
+    /* FAQ Section */
+    .faq-section {
+      position: relative;
+      padding: 6rem 0;
+      background: var(--obsidian-950);
+    }
+
+    .faq-container {
+      max-width: 48rem;
+      margin: 0 auto;
+    }
+
+    .faq-item {
+      margin-bottom: 1rem;
+      background: rgba(20, 20, 20, 0.5);
+      border: 1px solid var(--obsidian-800);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      padding: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-weight: 500;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .faq-question:hover {
+      color: var(--champagne-400);
+    }
+
+    .faq-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--obsidian-800);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--champagne-500);
+      transition: transform 0.3s ease;
+    }
+
+    .faq-item.open .faq-icon {
+      transform: rotate(45deg);
+    }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .faq-item.open .faq-answer {
+      max-height: 200px;
+    }
+
+    .faq-answer-content {
+      padding: 0 1.5rem 1.5rem;
+      color: var(--obsidian-400);
+      line-height: 1.7;
+    }
+
+    /* Locations Section */
+    .locations-section {
+      position: relative;
+      padding: 6rem 0;
+      background: var(--obsidian-950);
+    }
+
+    .locations-grid {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .locations-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (min-width: 1024px) {
+      .locations-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .location-card {
+      padding: 2rem;
+      background: rgba(20, 20, 20, 0.5);
+      border: 1px solid var(--obsidian-800);
+      border-radius: 2px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .location-card:hover {
+      border-color: rgba(220, 187, 130, 0.3);
+    }
+
+    .location-name {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.25rem;
+      color: var(--champagne-400);
+      margin-bottom: 1.5rem;
+    }
+
+    .location-detail {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--obsidian-400);
+      font-size: 0.875rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .location-detail svg {
+      width: 16px;
+      height: 16px;
+      color: var(--champagne-500);
+    }
+
+    .location-address {
+      font-size: 0.75rem;
+      color: var(--obsidian-500);
+      margin-bottom: 1rem;
+    }
+
+    .location-directions {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--champagne-500);
+      font-size: 0.875rem;
+      font-weight: 500;
+      text-decoration: none;
+      margin-top: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .location-directions:hover {
+      gap: 0.75rem;
+    }
+
+    /* CTA Section */
+    .cta-section {
+      position: relative;
+      padding: 6rem 0;
+      text-align: center;
+      background: var(--obsidian-950);
+    }
+
+    .cta-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      margin-bottom: 1.5rem;
+    }
+
+    .cta-description {
+      color: var(--obsidian-400);
+      margin-bottom: 2rem;
+    }
+
+    .cta-buttons {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .cta-buttons .btn-primary,
+    .cta-buttons .btn-secondary {
+      width: 100%;
+      max-width: 280px;
+      justify-content: center;
+    }
+
+    @media (min-width: 640px) {
+      .cta-buttons {
+        flex-direction: row;
+        justify-content: center;
+      }
+      .cta-buttons .btn-primary,
+      .cta-buttons .btn-secondary {
+        width: auto;
+        min-width: 180px;
+      }
+    }
+
+    /* Footer */
+    .footer {
+      padding: 4rem 0 2rem;
+      background: var(--obsidian-900);
+      border-top: 1px solid var(--obsidian-800);
+    }
+
+    .footer-grid {
+      display: grid;
+      gap: 3rem;
+      margin-bottom: 3rem;
+    }
+
+    @media (min-width: 768px) {
+      .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr 1fr; }
+    }
+
+    .footer-brand {
+      max-width: 300px;
+    }
+
+    .footer-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-description {
+      color: var(--obsidian-400);
+      font-size: 0.875rem;
+      line-height: 1.7;
+      margin-bottom: 1.5rem;
+    }
+
+    .footer-contact {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .footer-contact a {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--obsidian-400);
+      font-size: 0.875rem;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-contact a:hover {
+      color: var(--champagne-400);
+    }
+
+    .footer-social {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .footer-social a {
+      width: 40px;
+      height: 40px;
+      border-radius: 2px;
+      background: var(--obsidian-800);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--obsidian-400);
+      transition: all 0.3s ease;
+    }
+
+    .footer-social a:hover {
+      background: var(--champagne-500);
+      color: var(--obsidian-950);
+    }
+
+    .footer-column h4 {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1rem;
+      color: #fff;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.1em;
+    }
+
+    .footer-links {
+      list-style: none;
+    }
+
+    .footer-links li {
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-links a {
+      color: var(--obsidian-400);
+      font-size: 0.875rem;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--champagne-400);
+    }
+
+    .footer-bottom {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--obsidian-800);
+    }
+
+    @media (min-width: 768px) {
+      .footer-bottom {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+      }
+    }
+
+    .footer-copyright {
+      color: var(--obsidian-500);
+      font-size: 0.875rem;
+    }
+
+    .footer-tagline {
+      color: var(--obsidian-500);
+      font-size: 0.875rem;
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header" id="header">
+    <div class="container">
+      <nav>
+        <a href="#" class="logo">
+          <div class="logo-icon">DS</div>
+          <div class="logo-text">
+            <span>DETAIL</span><span>STACK</span>
+          </div>
+        </a>
+
+        <div class="nav-links">
+          <a href="#services" class="nav-link">Services</a>
+          <a href="#packages" class="nav-link">Packages</a>
+          <a href="#gallery" class="nav-link">Gallery</a>
+          <a href="#reviews" class="nav-link">Reviews</a>
+          <a href="#faq" class="nav-link">FAQ</a>
+          <a href="#contact" class="nav-link">Contact</a>
+        </div>
+
+        <div class="nav-cta">
+          <a href="tel:+13233714373" class="nav-phone">
+            <i data-lucide="phone"></i>
+            <span>(323) 371-4373</span>
+          </a>
+          <a href="/demo/book" class="btn-primary">
+            Book Now
+            <i data-lucide="chevron-right"></i>
+          </a>
+        </div>
+
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+          <i data-lucide="menu"></i>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-header">
+      <div class="logo-icon">DS</div>
+      <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+        <i data-lucide="x"></i>
+      </button>
+    </div>
+    <nav class="mobile-menu-nav">
+      <a href="#services" class="mobile-nav-link" onclick="toggleMobileMenu()">SERVICES</a>
+      <a href="#packages" class="mobile-nav-link" onclick="toggleMobileMenu()">PACKAGES</a>
+      <a href="#gallery" class="mobile-nav-link" onclick="toggleMobileMenu()">GALLERY</a>
+      <a href="#reviews" class="mobile-nav-link" onclick="toggleMobileMenu()">REVIEWS</a>
+      <a href="#faq" class="mobile-nav-link" onclick="toggleMobileMenu()">FAQ</a>
+      <a href="#contact" class="mobile-nav-link" onclick="toggleMobileMenu()">CONTACT</a>
+      <a href="/demo/book" class="btn-primary" style="margin-top: 1rem; padding: 1rem 2rem; font-size: 1.125rem;" onclick="toggleMobileMenu()">Book Your Detail</a>
+    </nav>
+  </div>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-bg">
+      <div class="hero-gradient"></div>
+      <div class="hero-glow"></div>
+      <div class="hero-grid"></div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-grid-layout">
+        <div>
+          <div class="hero-badge">
+            <span class="hero-badge-dot"></span>
+            <span class="hero-badge-text">Los Angeles's Premier Detailing Studio</span>
+          </div>
+
+          <h1 class="hero-title">
+            <span>YOUR CAR</span><br>
+            <span>DESERVES</span><br>
+            <span class="text-gradient-gold">PERFECTION</span>
+          </h1>
+
+          <p class="hero-description">
+            Experience the art of automotive excellence. Our master detailers transform your vehicle into a showroom masterpiece with meticulous attention to every detail.
+          </p>
+
+          <div class="hero-buttons">
+            <a href="/demo/book" class="btn-primary" style="font-size: 1.125rem;">
+              Book Your Detail
+              <i data-lucide="chevron-right"></i>
+            </a>
+            <button class="btn-secondary">
+              <div class="play-btn">
+                <i data-lucide="play" style="width: 16px; height: 16px;"></i>
+              </div>
+              Watch Our Process
+            </button>
+          </div>
+
+          <div class="hero-trust">
+            <div class="trust-item">
+              <i data-lucide="star" style="fill: var(--champagne-500);"></i>
+              <span>4.9 Rating (500+ Reviews)</span>
+            </div>
+            <div class="trust-item">
+              <i data-lucide="shield"></i>
+              <span>Fully Insured</span>
+            </div>
+            <div class="trust-item">
+              <i data-lucide="clock"></i>
+              <span>Same-Day Available</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-image-wrapper">
+          <div class="hero-image-container">
+            <img src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?w=800&auto=format&fit=crop&q=80" alt="Luxury sports car" class="hero-image">
+            <div class="hero-image-overlay"></div>
+            <div class="hero-image-bottom"></div>
+            <div class="hero-corner-tl"></div>
+            <div class="hero-corner-br"></div>
+          </div>
+          <div class="hero-stats-card">
+            <div class="hero-stats-number">10,000+</div>
+            <div class="hero-stats-label">Vehicles Detailed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="scroll-indicator">
+      <span class="scroll-text">Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Stats Section -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-value" data-target="999">0+</div>
+          <div class="stat-label">Vehicles Detailed</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" data-target="499">0+</div>
+          <div class="stat-label">Happy Clients</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" data-target="10">0K+</div>
+          <div class="stat-label">Gallons of Water Saved</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" data-target="3">0</div>
+          <div class="stat-label">Convenient Locations</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Packages Section -->
+  <section class="packages-section" id="packages">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Our Services</div>
+        <h2 class="section-title">DETAILING PACKAGES FOR <span class="text-gradient-gold">EVERY NEED</span></h2>
+        <p class="section-description">From quick maintenance washes to comprehensive paint correction and ceramic coating. Choose the perfect package for your vehicle.</p>
+      </div>
+
+      <div class="packages-grid" id="packagesGrid"></div>
+    </div>
+  </section>
+
+  <!-- Gallery Section -->
+  <section class="gallery-section" id="gallery">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Our Work</div>
+        <h2 class="section-title">TRANSFORMATIONS THAT <span class="text-gradient-gold">SPEAK</span></h2>
+        <p class="section-description">Every vehicle tells a story. Here's a glimpse of the masterpieces we've created for our clients across Los Angeles.</p>
+      </div>
+
+      <div class="filter-tabs" id="galleryFilters"></div>
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="testimonials-section" id="reviews">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Testimonials</div>
+        <h2 class="section-title">TRUSTED BY <span class="text-gradient-gold">INDUSTRY LEADERS</span></h2>
+        <p class="section-description">Hear what our clients and fellow car enthusiasts have to say about working with DetailStack.</p>
+      </div>
+
+      <div class="filter-tabs" id="reviewFilters"></div>
+      <div class="testimonials-grid" id="testimonialsGrid"></div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section" id="faq">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">FAQ</div>
+        <h2 class="section-title">FREQUENTLY ASKED <span class="text-gradient-gold">QUESTIONS</span></h2>
+        <p class="section-description">Got questions? We've got answers. Can't find what you're looking for? <a href="#contact" style="color: var(--champagne-500); text-decoration: underline;">Contact us</a></p>
+      </div>
+
+      <div class="faq-container" id="faqContainer"></div>
+    </div>
+  </section>
+
+  <!-- Locations Section -->
+  <section class="locations-section" id="contact">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Locations</div>
+        <h2 class="section-title">3 CONVENIENT SPOTS <span class="text-gradient-gold">ACROSS LA</span></h2>
+        <p class="section-description">Walk-ins welcome. We'd love to see you.</p>
+      </div>
+
+      <div class="locations-grid" id="locationsGrid"></div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section" id="book">
+    <div class="container">
+      <h2 class="cta-title">READY TO GIVE YOUR CAR<br><span class="text-gradient-gold">THE TREATMENT IT DESERVES?</span></h2>
+      <p class="cta-description">Book online in 60 seconds or call us at (323) 371-4373</p>
+      <div class="cta-buttons">
+        <a href="/demo/book" class="btn-primary" style="font-size: 1.125rem; padding: 1rem 2rem;">
+          Book Now
+          <i data-lucide="chevron-right"></i>
+        </a>
+        <a href="tel:+13233714373" class="btn-secondary" style="font-size: 1.125rem; padding: 1rem 2rem;">
+          <i data-lucide="phone"></i>
+          Call Us
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo">
+            <div class="logo-icon">DS</div>
+            <div class="logo-text">
+              <span>DETAIL</span><span>STACK</span>
+            </div>
+          </div>
+          <p class="footer-description">Los Angeles's premier auto detailing studio. Transforming vehicles into showroom masterpieces since 2018.</p>
+          <div class="footer-contact">
+            <a href="tel:+13233714373">
+              <i data-lucide="phone"></i>
+              (323) 371-4373
+            </a>
+            <a href="mailto:hello@detailstack.com">
+              <i data-lucide="mail"></i>
+              hello@detailstack.com
+            </a>
+          </div>
+          <div class="footer-social">
+            <a href="#"><i data-lucide="instagram"></i></a>
+            <a href="#"><i data-lucide="facebook"></i></a>
+            <a href="#"><i data-lucide="twitter"></i></a>
+            <a href="#"><i data-lucide="youtube"></i></a>
+          </div>
+        </div>
+
+        <div class="footer-column">
+          <h4>SERVICES</h4>
+          <ul class="footer-links">
+            <li><a href="#">ECO Wash</a></li>
+            <li><a href="#">Complete Detail</a></li>
+            <li><a href="#">Interior Detail</a></li>
+            <li><a href="#">Ceramic Coating</a></li>
+            <li><a href="#">Paint Correction</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>COMPANY</h4>
+          <ul class="footer-links">
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Our Team</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Press</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>SUPPORT</h4>
+          <ul class="footer-links">
+            <li><a href="#">FAQ</a></li>
+            <li><a href="#">Booking Policy</a></li>
+            <li><a href="#">Gift Cards</a></li>
+            <li><a href="#">Refer a Friend</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>LEGAL</h4>
+          <ul class="footer-links">
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p class="footer-copyright">&copy; 2025 DetailStack. All rights reserved.</p>
+        <p class="footer-tagline">Crafted with precision in Los Angeles</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
+    // Mobile menu toggle
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('open');
+      document.body.style.overflow = menu.classList.contains('open') ? 'hidden' : '';
+    }
+
+    // Header scroll effect
+    window.addEventListener('scroll', () => {
+      const header = document.getElementById('header');
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+
+    // Animated counters
+    function animateCounters() {
+      const counters = document.querySelectorAll('.stat-value');
+      counters.forEach(counter => {
+        const target = parseInt(counter.dataset.target);
+        const suffix = counter.textContent.replace(/[0-9]/g, '');
+        let current = 0;
+        const duration = 2000;
+        const steps = 60;
+        const increment = target / steps;
+
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= target) {
+            counter.textContent = target + suffix;
+            clearInterval(timer);
+          } else {
+            counter.textContent = Math.floor(current) + suffix;
+          }
+        }, duration / steps);
+      });
+    }
+
+    // Intersection Observer for counter animation
+    const statsSection = document.querySelector('.stats-section');
+    const statsObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          animateCounters();
+          statsObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    statsObserver.observe(statsSection);
+
+    // Packages data and rendering
+    const packages = [
+      {
+        id: 'eco-wash',
+        icon: 'droplets',
+        name: 'ECO WASH PACKAGE',
+        price: 'From $79',
+        description: 'Waterless hand wash exterior with foam cannon pre-treatment. Eco-friendly and thorough.',
+        features: ['Waterless Ceramic Hand Wash', 'Vacuum Interior', 'Dashboard Wipe Down', 'Windows Inside & Out', 'Mirrors & Door Jambs']
+      },
+      {
+        id: 'complete-detail',
+        icon: 'sparkles',
+        name: 'COMPLETE DETAIL',
+        price: 'From $249',
+        description: 'The ultimate service to make your car shine inside & out. Our most popular package.',
+        features: ['Everything in ECO Wash', 'Full Interior Detail', 'Leather Conditioning', 'ECO Wax Protection', 'Exterior Speed Polish'],
+        popular: true
+      },
+      {
+        id: 'interior-detail',
+        icon: 'car',
+        name: 'INTERIOR DETAIL',
+        price: 'From $149',
+        description: 'Deep clean your interior with steam, odor eliminators, and premium products.',
+        features: ['ECO Wash Included', 'Cup Holders, Vents & Crevices', 'Floor Mats, Carpets & Seats', 'Trunk & Lining', 'Leather Treatment']
+      },
+      {
+        id: 'ceramic-coating',
+        icon: 'shield',
+        name: 'CERAMIC COATING',
+        price: 'From $599',
+        description: 'Professional-grade protection from scratches, dust, and salt. Long-lasting hydrophobic finish.',
+        features: ['Multi-stage Process', 'Ultimate Paint Protection', 'Scratch and Swirl Removal', '1-5 Year Protection', 'Hydrophobic Finish']
+      },
+      {
+        id: 'paint-correction',
+        icon: 'wrench',
+        name: 'PAINT CORRECTION',
+        price: 'From $399',
+        description: 'Multi-stage polish to remove scratches, swirls, and oxidation. Restore your paint to showroom condition.',
+        features: ['Paint Inspection', 'Clay Bar Treatment', 'Multi-Stage Polish', 'Swirl Removal', 'Mirror Finish']
+      },
+      {
+        id: 'express-detail',
+        icon: 'zap',
+        name: 'EXPRESS DETAIL',
+        price: 'From $49',
+        description: 'Quick but thorough maintenance detail. Perfect for busy schedules.',
+        features: ['Exterior Rinse', 'Quick Interior Wipe', 'Window Cleaning', 'Tire Shine', '30-Minute Service']
+      }
+    ];
+
+    function renderPackages() {
+      const grid = document.getElementById('packagesGrid');
+      grid.innerHTML = packages.map(pkg => `
+        <div class="package-card ${pkg.popular ? 'popular' : ''}">
+          ${pkg.popular ? '<div class="package-badge">Most Popular</div>' : ''}
+          <div class="package-icon"><i data-lucide="${pkg.icon}"></i></div>
+          <div class="package-header">
+            <h3 class="package-name">${pkg.name}</h3>
+            <span class="package-price">${pkg.price}</span>
+          </div>
+          <p class="package-description">${pkg.description}</p>
+          <ul class="package-features">
+            ${pkg.features.map(f => `<li>${f}</li>`).join('')}
+          </ul>
+          <a href="/demo/book?package=${pkg.id}" class="package-btn ${pkg.popular ? 'primary' : 'secondary'}">Book Now</a>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+    renderPackages();
+
+    // Gallery data and rendering
+    const galleryItems = [
+      { image: 'https://images.unsplash.com/photo-1614162692292-7ac56d7f7f1e?w=800&auto=format&fit=crop&q=80', title: 'PORSCHE 911 GT3', desc: 'Full ceramic coating with paint correction', category: 'Ceramic Coating', large: true },
+      { image: 'https://images.unsplash.com/photo-1617531653332-bd46c24f2068?w=600&auto=format&fit=crop&q=80', title: 'MERCEDES-AMG GT', category: 'Paint Correction' },
+      { image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?w=600&auto=format&fit=crop&q=80', title: 'BMW M4 COMPETITION', category: 'Complete Detail' },
+      { image: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=600&auto=format&fit=crop&q=80', title: 'LAMBORGHINI HURACAN', category: 'Ceramic Coating' },
+      { image: 'https://images.unsplash.com/photo-1617788138017-80ad40651399?w=600&auto=format&fit=crop&q=80', title: 'TESLA MODEL S PLAID', category: 'Complete Detail' },
+      { image: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?w=600&auto=format&fit=crop&q=80', title: 'AUDI RS6 AVANT', category: 'ECO Wash' },
+      { image: 'https://images.unsplash.com/photo-1603584173870-7f23fdae1b7a?w=600&auto=format&fit=crop&q=80', title: 'BMW M3', category: 'Paint Correction' },
+      { image: 'https://images.unsplash.com/photo-1583121274602-3e2820c69888?w=600&auto=format&fit=crop&q=80', title: 'FERRARI 488 GTB', category: 'Ceramic Coating' }
+    ];
+
+    const galleryFilters = ['All', 'Ceramic Coating', 'Paint Correction', 'Complete Detail', 'ECO Wash'];
+    let activeGalleryFilter = 'All';
+
+    function renderGalleryFilters() {
+      const container = document.getElementById('galleryFilters');
+      container.innerHTML = galleryFilters.map(f => `
+        <button class="filter-tab ${f === activeGalleryFilter ? 'active' : ''}" onclick="setGalleryFilter('${f}')">${f}</button>
+      `).join('');
+    }
+
+    function renderGallery() {
+      const grid = document.getElementById('galleryGrid');
+      const filtered = activeGalleryFilter === 'All' ? galleryItems : galleryItems.filter(i => i.category === activeGalleryFilter);
+      grid.innerHTML = filtered.map(item => `
+        <div class="gallery-item ${item.large ? 'large' : ''}">
+          <img src="${item.image}" alt="${item.title}">
+          <div class="gallery-item-overlay"></div>
+          <div class="gallery-item-content">
+            <h3 class="gallery-item-title">${item.title}</h3>
+            ${item.desc ? `<p class="gallery-item-desc">${item.desc}</p>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function setGalleryFilter(filter) {
+      activeGalleryFilter = filter;
+      renderGalleryFilters();
+      renderGallery();
+    }
+
+    renderGalleryFilters();
+    renderGallery();
+
+    // Testimonials data and rendering
+    const testimonials = [
+      { quote: "One of the best car washes in the entire west coast! I'm beyond impressed with the service and the product. Highly recommend this place!", author: 'Alex M.', vehicle: 'BMW M4 Owner', location: 'West Hollywood', brand: 'BMW' },
+      { quote: "I purchased the coupon for the detail and wasn't disappointed! My car looks brand new. Will never use another detailer again.", author: 'Oscar R.', vehicle: 'Porsche 911 Owner', location: 'Beverly Hills', brand: 'Porsche' },
+      { quote: 'The ceramic coating they did on my AMG is absolutely incredible. Water beads off like magic. Worth every penny.', author: 'Marcus J.', vehicle: 'Mercedes AMG Owner', location: 'Santa Monica', brand: 'Mercedes' },
+      { quote: 'Finally found a detailer who understands luxury vehicles. The attention to detail is unmatched. My interior looks brand new.', author: 'Sarah K.', vehicle: 'Range Rover Owner', location: 'Hollywood Hills', brand: 'Range Rover' },
+      { quote: 'Mobile service is a game changer. They came to my office and my car was perfect when I left work. Incredible convenience.', author: 'David T.', vehicle: 'Audi RS7 Owner', location: 'Century City', brand: 'Audi' }
+    ];
+
+    const reviewFilters = ['All', 'BMW', 'Porsche', 'Tesla', 'Mercedes', 'Range Rover', 'Audi'];
+    let activeReviewFilter = 'All';
+
+    function renderReviewFilters() {
+      const container = document.getElementById('reviewFilters');
+      container.innerHTML = reviewFilters.map(f => `
+        <button class="filter-tab ${f === activeReviewFilter ? 'active' : ''}" onclick="setReviewFilter('${f}')">${f}</button>
+      `).join('');
+    }
+
+    function renderTestimonials() {
+      const grid = document.getElementById('testimonialsGrid');
+      const filtered = activeReviewFilter === 'All' ? testimonials : testimonials.filter(t => t.brand === activeReviewFilter);
+      grid.innerHTML = filtered.map(t => `
+        <div class="testimonial-card">
+          <div class="testimonial-stars">
+            ${[1,2,3,4,5].map(() => '<i data-lucide="star"></i>').join('')}
+            <span class="testimonial-quote-icon">"</span>
+          </div>
+          <p class="testimonial-text">"${t.quote}"</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">${t.author.charAt(0)}</div>
+            <div>
+              <div class="testimonial-name">${t.author}</div>
+              <div class="testimonial-vehicle">${t.vehicle}</div>
+            </div>
+          </div>
+          <div class="testimonial-location">${t.location}</div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function setReviewFilter(filter) {
+      activeReviewFilter = filter;
+      renderReviewFilters();
+      renderTestimonials();
+    }
+
+    renderReviewFilters();
+    renderTestimonials();
+
+    // FAQ data and rendering
+    const faqs = [
+      { q: 'What is a waterless car wash?', a: 'Our waterless wash uses just 8 ounces of water and eco-friendly products to remove dirt. This keeps your paint protected from the gallon needed of a regular car wash.' },
+      { q: 'How often should I wax my vehicle?', a: 'We recommend waxing your vehicle every 3-4 months to maintain optimal protection and shine. Ceramic coatings can last 1-5 years depending on the package.' },
+      { q: 'Do you offer mobile service?', a: 'Yes! We offer mobile detailing services throughout Los Angeles. Our fully-equipped vans come to your home or office at your convenience.' },
+      { q: 'Are automatic car washes bad for my car?', a: 'Automatic car washes can cause micro-scratches and swirl marks over time due to dirty brushes and harsh chemicals. Hand washing is always gentler on your paint.' },
+      { q: 'Can you remove swirl marks?', a: 'Absolutely! Our paint correction service uses multi-stage polishing to remove swirl marks, scratches, and oxidation, restoring your paint to showroom condition.' },
+      { q: 'What payment methods do you accept?', a: 'We accept all major credit cards, Apple Pay, Google Pay, and cash. Payment is collected after service completion.' }
+    ];
+
+    function renderFAQs() {
+      const container = document.getElementById('faqContainer');
+      container.innerHTML = faqs.map((faq, i) => `
+        <div class="faq-item" id="faq-${i}">
+          <button class="faq-question" onclick="toggleFAQ(${i})">
+            ${faq.q}
+            <span class="faq-icon"><i data-lucide="plus"></i></span>
+          </button>
+          <div class="faq-answer">
+            <p class="faq-answer-content">${faq.a}</p>
+          </div>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    function toggleFAQ(index) {
+      const item = document.getElementById(`faq-${index}`);
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if (!wasOpen) item.classList.add('open');
+    }
+
+    renderFAQs();
+
+    // Locations data and rendering
+    const locations = [
+      { name: 'WEST HOLLYWOOD', address: '8500 Sunset Blvd', detail: 'Parking lot east of Sunset Pl', hours: 'Mon-Sun: 8AM-7PM', phone: '(323) 371-4373' },
+      { name: 'HOLLYWOOD', address: '7741 Santa Monica Bl', detail: 'Parking lot just east of Fairfax near North Curson Ave', hours: 'Mon-Sun: 8AM-6PM', phone: '(323) 371-4373' },
+      { name: 'DOWNTOWN LA', address: '456 S Grand Ave', detail: 'Parking garage Level P1', hours: 'Mon-Fri: 8AM-5PM', phone: '(323) 371-4373' }
+    ];
+
+    function renderLocations() {
+      const grid = document.getElementById('locationsGrid');
+      grid.innerHTML = locations.map(loc => `
+        <div class="location-card">
+          <h3 class="location-name">${loc.name}</h3>
+          <div class="location-detail">
+            <i data-lucide="map-pin"></i>
+            ${loc.address}
+          </div>
+          <div class="location-address">${loc.detail}</div>
+          <div class="location-detail">
+            <i data-lucide="clock"></i>
+            ${loc.hours}
+          </div>
+          <div class="location-detail">
+            <i data-lucide="phone"></i>
+            ${loc.phone}
+          </div>
+          <a href="#" class="location-directions">
+            Get Directions
+            <i data-lucide="navigation"></i>
+          </a>
+        </div>
+      `).join('');
+      lucide.createIcons();
+    }
+
+    renderLocations();
+  </script>
+</body>
+</html>

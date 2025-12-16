@@ -34,7 +34,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <div className="text-xl font-bold">
-            DetailStack
+            DetailerStack
           </div>
 
           {/* Desktop Navigation */}

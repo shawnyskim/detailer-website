@@ -1,0 +1,2383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Your Detail - DetailStack</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --obsidian-300: #a8a8a8;
+      --obsidian-400: #737373;
+      --obsidian-500: #525252;
+      --obsidian-600: #404040;
+      --obsidian-700: #303030;
+      --obsidian-800: #1f1f1f;
+      --obsidian-900: #141414;
+      --obsidian-950: #0a0a0a;
+      --champagne-400: #d4b896;
+      --champagne-500: #c9a66b;
+      --champagne-600: #b8935a;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--obsidian-950);
+      color: #fff;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .font-display { font-family: 'Oswald', sans-serif; font-weight: 500; }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: var(--obsidian-900);
+      border-bottom: 1px solid var(--obsidian-800);
+      padding: 1rem 1.5rem;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, var(--champagne-400), var(--champagne-600));
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Oswald', sans-serif;
+      font-size: 1rem;
+      color: var(--obsidian-950);
+    }
+
+    .logo-text {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.25rem;
+      letter-spacing: 0.15em;
+    }
+
+    .logo-text span:first-child { color: #fff; }
+    .logo-text span:last-child { color: var(--champagne-400); }
+
+    .back-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--obsidian-400);
+      text-decoration: none;
+      font-size: 0.875rem;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: #fff; }
+
+    /* Main Layout */
+    .main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 8rem;
+      display: grid;
+      gap: 2rem;
+    }
+
+    @media (min-width: 1024px) {
+      .main {
+        grid-template-columns: 1fr 360px;
+        padding-bottom: 4rem;
+      }
+    }
+
+    /* Progress Steps */
+    .progress {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1.5rem 0;
+      overflow-x: auto;
+    }
+
+    .progress-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 60px;
+    }
+
+    .progress-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--obsidian-800);
+      border: 2px solid var(--obsidian-700);
+      color: var(--obsidian-500);
+      transition: all 0.3s;
+    }
+
+    .progress-step.active .progress-icon {
+      background: var(--champagne-500);
+      border-color: var(--champagne-500);
+      color: var(--obsidian-950);
+    }
+
+    .progress-step.completed .progress-icon {
+      background: var(--obsidian-800);
+      border-color: var(--champagne-500);
+      color: var(--champagne-500);
+    }
+
+    .progress-label {
+      font-size: 0.75rem;
+      color: var(--obsidian-500);
+      text-align: center;
+      display: none;
+    }
+
+    @media (min-width: 640px) {
+      .progress-label { display: block; }
+    }
+
+    .progress-step.active .progress-label { color: var(--champagne-500); }
+    .progress-step.completed .progress-label { color: var(--obsidian-300); }
+
+    .progress-line {
+      width: 40px;
+      height: 2px;
+      background: var(--obsidian-700);
+      margin-bottom: 1.5rem;
+    }
+
+    .progress-line.completed { background: var(--champagne-500); }
+
+    @media (min-width: 640px) {
+      .progress-line { width: 60px; }
+    }
+
+    /* Step Content */
+    .step-content { display: none; }
+    .step-content.active { display: block; }
+
+    .step-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.75rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+
+    .step-subtitle {
+      color: var(--obsidian-400);
+      margin-bottom: 2rem;
+    }
+
+    /* Service Cards */
+    .service-card {
+      background: var(--obsidian-900);
+      border: 1px solid var(--obsidian-800);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+
+    .service-card:hover { border-color: var(--obsidian-600); }
+    .service-card.selected { border-color: var(--champagne-500); background: rgba(201, 166, 107, 0.05); }
+
+    .service-card-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+
+    .service-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--obsidian-800);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--obsidian-400);
+      flex-shrink: 0;
+    }
+
+    .service-card.selected .service-icon {
+      background: var(--champagne-500);
+      color: var(--obsidian-950);
+    }
+
+    .service-info { flex: 1; }
+
+    .service-name-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .service-name {
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .service-badge {
+      padding: 0.125rem 0.5rem;
+      background: var(--champagne-500);
+      color: var(--obsidian-950);
+      font-size: 0.625rem;
+      font-weight: 600;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .service-desc {
+      color: var(--obsidian-400);
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .service-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--obsidian-500);
+      font-size: 0.8rem;
+    }
+
+    .service-price {
+      color: var(--champagne-500);
+      font-weight: 600;
+      font-size: 1.125rem;
+    }
+
+    .service-radio {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--obsidian-600);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .service-card.selected .service-radio {
+      border-color: var(--champagne-500);
+      background: var(--champagne-500);
+    }
+
+    .service-radio::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      background: var(--obsidian-950);
+      border-radius: 50%;
+      opacity: 0;
+    }
+
+    .service-card.selected .service-radio::after { opacity: 1; }
+
+    /* Expandable Details */
+    .service-expand-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      color: var(--champagne-500);
+      font-size: 0.8rem;
+      font-weight: 500;
+      background: rgba(201, 166, 107, 0.08);
+      border: 1px solid rgba(201, 166, 107, 0.2);
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 1rem;
+      padding: 0.625rem 1rem;
+      width: 100%;
+      transition: all 0.2s ease;
+    }
+
+    .service-expand-btn:hover {
+      background: rgba(201, 166, 107, 0.15);
+      border-color: rgba(201, 166, 107, 0.4);
+    }
+
+    .service-expand-btn:active {
+      transform: scale(0.98);
+    }
+
+    .service-expand-btn svg {
+      transition: transform 0.2s;
+    }
+
+    .service-card.expanded .service-expand-btn {
+      background: rgba(201, 166, 107, 0.12);
+      border-color: rgba(201, 166, 107, 0.3);
+    }
+
+    .service-card.expanded .service-expand-btn svg {
+      transform: rotate(180deg);
+    }
+
+    .service-details {
+      display: none;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--obsidian-800);
+    }
+
+    .service-card.expanded .service-details { display: block; }
+
+    .service-features {
+      list-style: none;
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .service-features li {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--obsidian-300);
+    }
+
+    .service-features li::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--champagne-500);
+      border-radius: 50%;
+    }
+
+    /* Vehicle Type Cards */
+    .vehicle-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .vehicle-card {
+      background: var(--obsidian-900);
+      border: 1px solid var(--obsidian-800);
+      border-radius: 8px;
+      padding: 1.25rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .vehicle-card:hover { border-color: var(--obsidian-600); }
+    .vehicle-card.selected { border-color: var(--champagne-500); }
+
+    .vehicle-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .vehicle-name { font-weight: 600; font-size: 0.95rem; }
+
+    .vehicle-price {
+      font-size: 0.8rem;
+      color: var(--obsidian-400);
+    }
+
+    .vehicle-card.selected .vehicle-check {
+      color: var(--champagne-500);
+    }
+
+    /* Form Inputs */
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-group { margin-bottom: 1rem; }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--obsidian-400);
+      margin-bottom: 0.5rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.875rem 1rem;
+      background: var(--obsidian-900);
+      border: 1px solid var(--obsidian-700);
+      border-radius: 6px;
+      color: #fff;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--champagne-500);
+    }
+
+    .form-input::placeholder { color: var(--obsidian-500); }
+
+    /* Add-ons */
+    .addons-title {
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .addon-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--obsidian-900);
+      border: 1px solid var(--obsidian-800);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      margin-bottom: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .addon-card:hover { border-color: var(--obsidian-600); }
+    .addon-card.selected { border-color: var(--champagne-500); background: rgba(201, 166, 107, 0.05); }
+
+    .addon-name { font-weight: 500; }
+
+    .addon-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .addon-price { color: var(--champagne-500); font-weight: 500; }
+
+    .addon-check {
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--obsidian-600);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: transparent;
+    }
+
+    .addon-card.selected .addon-check {
+      background: var(--champagne-500);
+      border-color: var(--champagne-500);
+      color: var(--obsidian-950);
+    }
+
+    /* Date Selection - Mobile Optimized */
+    .date-section { margin-bottom: 2rem; }
+    .date-label { font-weight: 500; margin-bottom: 1rem; }
+
+    .date-scroll {
+      display: flex;
+      gap: 0.75rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .date-card {
+      min-width: 80px;
+      padding: 1rem;
+      background: var(--obsidian-900);
+      border: 1px solid var(--obsidian-800);
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .date-card:hover { border-color: var(--obsidian-600); }
+    .date-card.selected { border-color: var(--champagne-500); background: rgba(201, 166, 107, 0.1); }
+    .date-card.today { border-color: var(--champagne-500); }
+
+    .date-day {
+      font-size: 0.75rem;
+      color: var(--obsidian-400);
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+
+    .date-num {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+
+    .date-card.selected .date-day,
+    .date-card.selected .date-num { color: var(--champagne-500); }
+
+    .date-month {
+      font-size: 0.7rem;
+      color: var(--obsidian-500);
+      margin-top: 0.25rem;
+    }
+
+    /* Time Selection - Mobile Optimized */
+    .time-section { margin-bottom: 2rem; }
+
+    .time-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+
+    @media (min-width: 640px) {
+      .time-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .time-slot {
+      padding: 1rem;
+      background: var(--obsidian-900);
+      border: 1px solid var(--obsidian-800);
+      border-radius: 8px;
+      text-align: center;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .time-slot:hover { border-color: var(--obsidian-600); }
+    .time-slot.selected { border-color: var(--champagne-500); background: var(--champagne-500); color: var(--obsidian-950); }
+    .time-slot.unavailable { opacity: 0.4; cursor: not-allowed; }
+
+    .time-slot-limited {
+      font-size: 0.7rem;
+      color: #ef4444;
+      margin-top: 0.25rem;
+    }
+
+    /* Location Cards */
+    .location-card {
+      background: var(--obsidian-900);
+      border: 1px solid var(--obsidian-800);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .location-card:hover { border-color: var(--obsidian-600); }
+    .location-card.selected { border-color: var(--champagne-500); }
+
+    .location-name {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .location-address {
+      color: var(--obsidian-400);
+      font-size: 0.875rem;
+    }
+
+    /* Booking Summary */
+    .summary {
+      background: var(--obsidian-900);
+      border: 1px solid var(--obsidian-800);
+      border-radius: 12px;
+      padding: 1.5rem;
+      position: sticky;
+      top: 100px;
+    }
+
+    .summary-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.25rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 1.5rem;
+    }
+
+    .summary-empty {
+      color: var(--obsidian-500);
+      font-size: 0.875rem;
+      padding: 1rem 0;
+    }
+
+    .summary-items { margin-bottom: 1.5rem; }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+      font-size: 0.9rem;
+    }
+
+    .summary-item-name { color: var(--obsidian-300); }
+    .summary-item-price { color: #fff; }
+    .summary-item.addon .summary-item-name { color: var(--obsidian-400); font-size: 0.85rem; }
+
+    .summary-divider {
+      height: 1px;
+      background: var(--obsidian-800);
+      margin: 1rem 0;
+    }
+
+    .summary-total {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 600;
+    }
+
+    .summary-total-price {
+      color: var(--champagne-500);
+      font-size: 1.25rem;
+    }
+
+    .summary-trust {
+      margin-top: 1.5rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--obsidian-800);
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--obsidian-400);
+      margin-bottom: 0.5rem;
+    }
+
+    .trust-item svg { color: var(--champagne-500); width: 16px; height: 16px; }
+
+    /* Mobile Summary Bar */
+    .mobile-summary {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--obsidian-900);
+      border-top: 1px solid var(--obsidian-800);
+      padding: 1rem 1.5rem;
+      z-index: 40;
+      transition: all 0.3s ease;
+    }
+
+    @media (max-width: 1023px) {
+      .mobile-summary { display: block; }
+      .summary { display: none; }
+    }
+
+    .mobile-summary-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .mobile-summary-info {
+      cursor: pointer;
+    }
+
+    .mobile-summary-label {
+      font-size: 0.75rem;
+      color: var(--obsidian-400);
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .mobile-summary-price {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--champagne-500);
+    }
+
+    /* Mobile Drawer */
+    .mobile-summary-drawer {
+      display: none;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .mobile-summary.drawer-open .mobile-summary-drawer {
+      display: block;
+      max-height: 60vh;
+      overflow-y: auto;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--obsidian-800);
+    }
+
+    .mobile-drawer-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 0.75rem;
+      margin-bottom: 0.75rem;
+      border-bottom: 1px solid var(--obsidian-800);
+      cursor: pointer;
+    }
+
+    .mobile-drawer-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1rem;
+      letter-spacing: 0.05em;
+    }
+
+    .mobile-drawer-icon {
+      width: 20px;
+      height: 20px;
+      color: var(--obsidian-400);
+      transition: transform 0.3s ease;
+    }
+
+    .mobile-summary.drawer-open .mobile-drawer-icon {
+      transform: rotate(180deg);
+    }
+
+    .mobile-drawer-content {
+      font-size: 0.875rem;
+    }
+
+    .mobile-drawer-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.375rem 0;
+    }
+
+    .mobile-drawer-item-name {
+      color: var(--obsidian-300);
+    }
+
+    .mobile-drawer-item-price {
+      color: #fff;
+    }
+
+    .mobile-drawer-item.addon .mobile-drawer-item-name {
+      color: var(--obsidian-400);
+      font-size: 0.8rem;
+      padding-left: 0.5rem;
+    }
+
+    /* Mobile Overlay */
+    .mobile-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 35;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .mobile-overlay.active {
+      display: block;
+      opacity: 1;
+    }
+
+    /* Navigation */
+    .nav-buttons {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 2rem;
+      margin-top: 2rem;
+      border-top: 1px solid var(--obsidian-800);
+    }
+
+    .btn-back {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--obsidian-400);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 0.9rem;
+      padding: 0.75rem 0;
+      transition: color 0.2s;
+    }
+
+    .btn-back:hover { color: #fff; }
+
+    .btn-continue {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 2rem;
+      background: linear-gradient(135deg, var(--champagne-500), var(--champagne-600));
+      color: var(--obsidian-950);
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    .btn-continue:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 20px rgba(201, 166, 107, 0.3);
+    }
+
+    .btn-continue:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Urgency Banner */
+    .urgency-banner {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: #fca5a5;
+    }
+
+    .urgency-banner svg { color: #ef4444; }
+
+    /* Contact Form */
+    .contact-grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    @media (min-width: 640px) {
+      .contact-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    /* Payment Section */
+    .payment-info {
+      background: var(--obsidian-900);
+      border: 1px solid var(--obsidian-800);
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .payment-total {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .payment-total-label {
+      color: var(--obsidian-400);
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .payment-total-amount {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--champagne-500);
+    }
+
+    .payment-methods {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .payment-method {
+      padding: 0.75rem 1.5rem;
+      background: var(--obsidian-800);
+      border: 1px solid var(--obsidian-700);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .payment-method.selected {
+      border-color: var(--champagne-500);
+      background: rgba(201, 166, 107, 0.1);
+    }
+
+    /* Success State */
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 3rem 1rem;
+    }
+
+    .success-screen.active { display: block; }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: var(--champagne-500);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2rem;
+    }
+
+    .success-icon svg { width: 40px; height: 40px; color: var(--obsidian-950); }
+
+    .success-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .success-message {
+      color: var(--obsidian-400);
+      margin-bottom: 2rem;
+    }
+
+    /* Responsive - Mobile First Optimizations */
+    /* Medium mobile devices (iPhone 12/13/14, Pixel, Galaxy S) - 390-414px */
+    @media (max-width: 640px) {
+      .form-row { grid-template-columns: 1fr; }
+      .vehicle-grid { grid-template-columns: 1fr; }
+
+      /* Header compact */
+      .header {
+        padding: 0.75rem 1rem;
+      }
+
+      .logo-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 0.875rem;
+      }
+
+      .logo-text {
+        font-size: 1rem;
+        letter-spacing: 0.1em;
+      }
+
+      .back-link span {
+        display: none;
+      }
+
+      /* Main padding */
+      .main {
+        padding: 1rem 1rem 7rem;
+      }
+
+      /* Progress stepper - compact for mobile */
+      .progress {
+        padding: 1rem 0;
+        gap: 0.25rem;
+      }
+
+      .progress-step {
+        min-width: 40px;
+      }
+
+      .progress-icon {
+        width: 36px;
+        height: 36px;
+      }
+
+      .progress-icon svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .progress-line {
+        width: 20px;
+        margin-bottom: 1rem;
+      }
+
+      /* Step content */
+      .step-title {
+        font-size: 1.375rem;
+      }
+
+      .step-subtitle {
+        font-size: 0.9rem;
+        margin-bottom: 1.5rem;
+      }
+
+      /* Service cards - mobile optimized */
+      .service-card {
+        padding: 1rem;
+      }
+
+      .service-card-header {
+        flex-wrap: wrap;
+        gap: 0.75rem;
+      }
+
+      .service-icon {
+        width: 40px;
+        height: 40px;
+      }
+
+      .service-icon svg {
+        width: 20px;
+        height: 20px;
+      }
+
+      .service-info {
+        flex: 1;
+        min-width: calc(100% - 90px);
+      }
+
+      .service-name {
+        font-size: 0.9rem;
+      }
+
+      .service-desc {
+        font-size: 0.8rem;
+        line-height: 1.4;
+      }
+
+      .service-price {
+        font-size: 1rem;
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+      }
+
+      /* Hide radio on mobile - use card highlight instead */
+      .service-radio {
+        display: none;
+      }
+
+      /* Enhanced selected state for mobile */
+      .service-card.selected {
+        border-color: var(--champagne-500);
+        background: rgba(201, 166, 107, 0.1);
+        box-shadow: 0 0 0 2px rgba(201, 166, 107, 0.3);
+      }
+
+      .service-card.selected .service-name {
+        color: var(--champagne-400);
+      }
+
+      /* Vehicle cards */
+      .vehicle-card {
+        padding: 1rem;
+      }
+
+      .vehicle-name {
+        font-size: 0.9rem;
+      }
+
+      /* Add-ons mobile */
+      .addon-card {
+        padding: 0.875rem 1rem;
+      }
+
+      .addon-name {
+        font-size: 0.9rem;
+      }
+
+      .addon-right {
+        gap: 0.75rem;
+      }
+
+      .addon-price {
+        font-size: 0.9rem;
+      }
+
+      /* Date selection mobile */
+      .date-card {
+        min-width: 70px;
+        padding: 0.75rem;
+      }
+
+      .date-num {
+        font-size: 1.125rem;
+      }
+
+      /* Time slots mobile - larger touch targets */
+      .time-slot {
+        padding: 0.875rem;
+        font-size: 0.9rem;
+        min-height: 54px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* Location cards mobile */
+      .location-card {
+        padding: 1rem;
+      }
+
+      .location-name {
+        font-size: 0.95rem;
+      }
+
+      .location-address {
+        font-size: 0.8rem;
+      }
+
+      /* Navigation buttons mobile */
+      .nav-buttons {
+        flex-direction: column-reverse;
+        gap: 1rem;
+        padding-top: 1.5rem;
+        margin-top: 1.5rem;
+      }
+
+      .btn-continue {
+        width: 100%;
+        justify-content: center;
+        padding: 1rem;
+      }
+
+      .btn-back {
+        width: 100%;
+        justify-content: center;
+        padding: 0.75rem;
+        background: var(--obsidian-800);
+        border-radius: 6px;
+      }
+
+      /* Mobile summary bar enhanced */
+      .mobile-summary {
+        padding: 0.875rem 1rem;
+        padding-bottom: calc(0.875rem + env(safe-area-inset-bottom, 0));
+      }
+
+      .mobile-summary .btn-continue {
+        padding: 0.875rem 1.25rem;
+        font-size: 0.9rem;
+      }
+
+      /* Payment mobile */
+      .payment-info {
+        padding: 1.25rem;
+      }
+
+      .payment-total-amount {
+        font-size: 2rem;
+      }
+
+      /* Success screen mobile */
+      .success-icon {
+        width: 64px;
+        height: 64px;
+      }
+
+      .success-icon svg {
+        width: 32px;
+        height: 32px;
+      }
+
+      .success-title {
+        font-size: 1.5rem;
+      }
+
+      .success-message {
+        font-size: 0.9rem;
+      }
+
+      /* Urgency banner mobile */
+      .urgency-banner {
+        font-size: 0.8rem;
+        padding: 0.625rem 0.875rem;
+      }
+    }
+
+    /* iPhone 12/13/14 and similar devices (390px) */
+    @media (max-width: 414px) {
+      .main {
+        padding: 0.875rem 0.875rem 7rem;
+      }
+
+      /* Progress stepper for 390px screens */
+      .progress {
+        gap: 0.125rem;
+        padding: 0.875rem 0;
+      }
+
+      .progress-step {
+        min-width: 36px;
+      }
+
+      .progress-icon {
+        width: 34px;
+        height: 34px;
+      }
+
+      .progress-icon svg {
+        width: 15px;
+        height: 15px;
+      }
+
+      .progress-line {
+        width: 16px;
+        margin-bottom: 0.875rem;
+      }
+
+      /* Step titles */
+      .step-title {
+        font-size: 1.25rem;
+      }
+
+      .step-subtitle {
+        font-size: 0.85rem;
+      }
+
+      /* Service cards optimized for 390px */
+      .service-card {
+        padding: 0.875rem;
+      }
+
+      .service-icon {
+        width: 36px;
+        height: 36px;
+      }
+
+      .service-icon svg {
+        width: 18px;
+        height: 18px;
+      }
+
+      .service-name {
+        font-size: 0.875rem;
+        line-height: 1.3;
+      }
+
+      .service-desc {
+        font-size: 0.75rem;
+      }
+
+      .service-badge {
+        font-size: 0.6rem;
+        padding: 0.1rem 0.375rem;
+      }
+
+      .service-meta {
+        font-size: 0.75rem;
+      }
+
+      .service-expand-btn {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.75rem;
+        margin-top: 0.75rem;
+      }
+
+      .service-features li {
+        font-size: 0.8rem;
+      }
+
+      /* Vehicle cards */
+      .vehicle-card {
+        padding: 0.875rem;
+      }
+
+      .vehicle-name {
+        font-size: 0.85rem;
+      }
+
+      .vehicle-price {
+        font-size: 0.75rem;
+      }
+
+      /* Add-ons */
+      .addon-card {
+        padding: 0.75rem 0.875rem;
+      }
+
+      .addon-name {
+        font-size: 0.85rem;
+      }
+
+      .addon-price {
+        font-size: 0.85rem;
+      }
+
+      .addon-right {
+        gap: 0.5rem;
+      }
+
+      .addon-check {
+        width: 20px;
+        height: 20px;
+      }
+
+      /* Form inputs */
+      .form-input {
+        padding: 0.75rem 0.875rem;
+        font-size: 0.95rem;
+      }
+
+      .form-label {
+        font-size: 0.8rem;
+      }
+
+      /* Date cards */
+      .date-card {
+        min-width: 64px;
+        padding: 0.625rem 0.5rem;
+      }
+
+      .date-day {
+        font-size: 0.7rem;
+      }
+
+      .date-num {
+        font-size: 1rem;
+      }
+
+      .date-month {
+        font-size: 0.65rem;
+      }
+
+      /* Time slots */
+      .time-slot {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.85rem;
+        min-height: 50px;
+      }
+
+      .time-slot-limited {
+        font-size: 0.65rem;
+      }
+
+      /* Location cards */
+      .location-card {
+        padding: 0.875rem;
+      }
+
+      .location-name {
+        font-size: 0.9rem;
+      }
+
+      .location-address {
+        font-size: 0.75rem;
+      }
+
+      /* Mobile summary bar */
+      .mobile-summary {
+        padding: 0.75rem 0.875rem;
+      }
+
+      .mobile-summary-label {
+        font-size: 0.7rem;
+      }
+
+      .mobile-summary-price {
+        font-size: 1.125rem;
+      }
+
+      .mobile-summary .btn-continue {
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+      }
+
+      /* Payment section */
+      .payment-info {
+        padding: 1rem;
+      }
+
+      .payment-total-amount {
+        font-size: 1.75rem;
+      }
+
+      .payment-total-label {
+        font-size: 0.8rem;
+      }
+
+      /* Urgency banner */
+      .urgency-banner {
+        font-size: 0.75rem;
+        padding: 0.5rem 0.75rem;
+      }
+    }
+
+    /* Small devices - iPhone SE, older phones (375px and below) */
+    @media (max-width: 380px) {
+      .main {
+        padding: 0.75rem 0.75rem 7rem;
+      }
+
+      /* Progress stepper ultra-compact */
+      .progress {
+        gap: 0;
+        padding: 0.75rem 0;
+      }
+
+      .progress-step {
+        min-width: 32px;
+      }
+
+      .progress-icon {
+        width: 30px;
+        height: 30px;
+      }
+
+      .progress-icon svg {
+        width: 13px;
+        height: 13px;
+      }
+
+      .progress-line {
+        width: 10px;
+        margin-bottom: 0.75rem;
+      }
+
+      .step-title {
+        font-size: 1.125rem;
+      }
+
+      .step-subtitle {
+        font-size: 0.8rem;
+      }
+
+      /* Service cards compact */
+      .service-card {
+        padding: 0.75rem;
+      }
+
+      .service-icon {
+        width: 32px;
+        height: 32px;
+      }
+
+      .service-icon svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      .service-name {
+        font-size: 0.8rem;
+      }
+
+      .service-desc {
+        font-size: 0.7rem;
+      }
+
+      .service-price {
+        font-size: 0.9rem;
+      }
+
+      .service-radio {
+        width: 18px;
+        height: 18px;
+      }
+
+      /* Time grid - single column on very small screens */
+      .time-grid {
+        gap: 0.5rem;
+      }
+
+      .time-slot {
+        padding: 0.625rem 0.375rem;
+        font-size: 0.8rem;
+        min-height: 46px;
+      }
+
+      /* Date cards smaller */
+      .date-card {
+        min-width: 56px;
+        padding: 0.5rem 0.375rem;
+      }
+
+      /* Mobile summary compact */
+      .mobile-summary {
+        padding: 0.625rem 0.75rem;
+      }
+
+      .mobile-summary-price {
+        font-size: 1rem;
+      }
+
+      .mobile-summary .btn-continue {
+        padding: 0.625rem 0.875rem;
+        font-size: 0.8rem;
+      }
+
+      /* Form inputs compact */
+      .form-input {
+        padding: 0.625rem 0.75rem;
+        font-size: 0.9rem;
+      }
+
+      /* Payment compact */
+      .payment-total-amount {
+        font-size: 1.5rem;
+      }
+
+      /* Success screen */
+      .success-icon {
+        width: 56px;
+        height: 56px;
+      }
+
+      .success-icon svg {
+        width: 28px;
+        height: 28px;
+      }
+
+      .success-title {
+        font-size: 1.25rem;
+      }
+    }
+
+    /* Extra small devices - iPhone 5/SE (320px) */
+    @media (max-width: 340px) {
+      .main {
+        padding: 0.5rem 0.5rem 6.5rem;
+      }
+
+      .header {
+        padding: 0.5rem 0.75rem;
+      }
+
+      .logo-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+      }
+
+      .logo-text {
+        font-size: 0.875rem;
+      }
+
+      /* Progress even smaller */
+      .progress-icon {
+        width: 26px;
+        height: 26px;
+      }
+
+      .progress-icon svg {
+        width: 12px;
+        height: 12px;
+      }
+
+      .progress-line {
+        width: 8px;
+      }
+
+      .step-title {
+        font-size: 1rem;
+      }
+
+      /* Service cards minimal */
+      .service-info {
+        min-width: calc(100% - 75px);
+      }
+
+      .service-name {
+        font-size: 0.75rem;
+      }
+
+      .service-expand-btn {
+        padding: 0.375rem 0.5rem;
+        font-size: 0.7rem;
+      }
+
+      /* Vehicle cards single column for tiny screens */
+      .vehicle-grid {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+
+      .vehicle-card {
+        padding: 0.625rem;
+      }
+
+      /* Time grid single column */
+      .time-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      /* Contact grid single column */
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Safe area support for notched phones */
+    @supports (padding: env(safe-area-inset-bottom)) {
+      .mobile-summary {
+        padding-bottom: calc(0.875rem + env(safe-area-inset-bottom));
+      }
+
+      .main {
+        padding-bottom: calc(7rem + env(safe-area-inset-bottom));
+      }
+    }
+
+    /* Touch improvements */
+    @media (hover: none) and (pointer: coarse) {
+      .service-card:hover,
+      .vehicle-card:hover,
+      .addon-card:hover,
+      .date-card:hover,
+      .time-slot:hover,
+      .location-card:hover {
+        border-color: var(--obsidian-800);
+      }
+
+      .service-card:active,
+      .vehicle-card:active,
+      .addon-card:active,
+      .date-card:active,
+      .time-slot:active,
+      .location-card:active {
+        transform: scale(0.98);
+      }
+
+      .btn-continue:hover {
+        transform: none;
+        box-shadow: none;
+      }
+
+      .btn-continue:active {
+        transform: scale(0.98);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="header-content">
+      <a href="/demo" class="logo">
+        <div class="logo-icon">DS</div>
+        <div class="logo-text"><span>DETAIL</span><span>STACK</span></div>
+      </a>
+      <a href="/demo" class="back-link">
+        <i data-lucide="chevron-left"></i>
+        <span>Back to Home</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="content-area">
+      <!-- Progress Steps -->
+      <div class="progress" id="progressBar">
+        <div class="progress-step active" data-step="1">
+          <div class="progress-icon"><i data-lucide="sparkles"></i></div>
+          <span class="progress-label">Service</span>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="2">
+          <div class="progress-icon"><i data-lucide="car"></i></div>
+          <span class="progress-label">Vehicle</span>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="3">
+          <div class="progress-icon"><i data-lucide="calendar"></i></div>
+          <span class="progress-label">Date & Time</span>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="4">
+          <div class="progress-icon"><i data-lucide="map-pin"></i></div>
+          <span class="progress-label">Location</span>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="5">
+          <div class="progress-icon"><i data-lucide="user"></i></div>
+          <span class="progress-label">Details</span>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="6">
+          <div class="progress-icon"><i data-lucide="credit-card"></i></div>
+          <span class="progress-label">Payment</span>
+        </div>
+      </div>
+
+      <!-- Step 1: Service Selection -->
+      <div class="step-content active" data-step="1">
+        <h2 class="step-title">CHOOSE YOUR SERVICE</h2>
+        <p class="step-subtitle">Select the detailing package that fits your needs</p>
+
+        <div id="serviceList"></div>
+
+        <div class="nav-buttons">
+          <div></div>
+          <button class="btn-continue" onclick="nextStep()" id="continueBtn1" disabled>
+            Continue <i data-lucide="chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 2: Vehicle Information -->
+      <div class="step-content" data-step="2">
+        <h2 class="step-title">VEHICLE INFORMATION</h2>
+        <p class="step-subtitle">Tell us about your vehicle</p>
+
+        <h3 class="addons-title">Vehicle Type</h3>
+        <div class="vehicle-grid" id="vehicleTypes"></div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Year</label>
+            <input type="text" class="form-input" id="vehicleYear" placeholder="2024">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Make</label>
+            <input type="text" class="form-input" id="vehicleMake" placeholder="BMW">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Model</label>
+            <input type="text" class="form-input" id="vehicleModel" placeholder="M4">
+          </div>
+        </div>
+
+        <h3 class="addons-title">Add-ons (Optional)</h3>
+        <div id="addonsList"></div>
+
+        <div class="nav-buttons">
+          <button class="btn-back" onclick="prevStep()">
+            <i data-lucide="chevron-left"></i> Back
+          </button>
+          <button class="btn-continue" onclick="nextStep()">
+            Continue <i data-lucide="chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 3: Date & Time -->
+      <div class="step-content" data-step="3">
+        <h2 class="step-title">SELECT DATE & TIME</h2>
+        <p class="step-subtitle">Choose your preferred appointment slot</p>
+
+        <div class="urgency-banner" id="urgencyBanner" style="display: none;">
+          <i data-lucide="clock"></i>
+          <span>Only 2 slots left for today!</span>
+        </div>
+
+        <div class="date-section">
+          <h3 class="date-label">Select Date</h3>
+          <div class="date-scroll" id="dateSelector"></div>
+        </div>
+
+        <div class="time-section">
+          <h3 class="date-label">Select Time</h3>
+          <div class="time-grid" id="timeSelector"></div>
+        </div>
+
+        <div class="nav-buttons">
+          <button class="btn-back" onclick="prevStep()">
+            <i data-lucide="chevron-left"></i> Back
+          </button>
+          <button class="btn-continue" onclick="nextStep()" id="continueBtn3" disabled>
+            Continue <i data-lucide="chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 4: Location -->
+      <div class="step-content" data-step="4">
+        <h2 class="step-title">SELECT LOCATION</h2>
+        <p class="step-subtitle">Choose where you'd like to have your vehicle detailed</p>
+
+        <div id="locationList"></div>
+
+        <div class="nav-buttons">
+          <button class="btn-back" onclick="prevStep()">
+            <i data-lucide="chevron-left"></i> Back
+          </button>
+          <button class="btn-continue" onclick="nextStep()" id="continueBtn4" disabled>
+            Continue <i data-lucide="chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 5: Contact Details -->
+      <div class="step-content" data-step="5">
+        <h2 class="step-title">YOUR DETAILS</h2>
+        <p class="step-subtitle">How can we reach you?</p>
+
+        <div class="contact-grid">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" class="form-input" id="firstName" placeholder="John">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" class="form-input" id="lastName" placeholder="Doe">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-input" id="email" placeholder="john@example.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Phone</label>
+            <input type="tel" class="form-input" id="phone" placeholder="(323) 555-1234">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Special Requests (Optional)</label>
+          <textarea class="form-input" id="notes" rows="3" placeholder="Any special instructions or requests..."></textarea>
+        </div>
+
+        <div class="nav-buttons">
+          <button class="btn-back" onclick="prevStep()">
+            <i data-lucide="chevron-left"></i> Back
+          </button>
+          <button class="btn-continue" onclick="nextStep()">
+            Continue <i data-lucide="chevron-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 6: Payment -->
+      <div class="step-content" data-step="6">
+        <h2 class="step-title">PAYMENT</h2>
+        <p class="step-subtitle">Complete your booking</p>
+
+        <div class="payment-info">
+          <div class="payment-total">
+            <div class="payment-total-label">Total Amount</div>
+            <div class="payment-total-amount" id="paymentTotal">$0</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Card Number</label>
+            <input type="text" class="form-input" placeholder="4242 4242 4242 4242">
+          </div>
+          <div class="contact-grid">
+            <div class="form-group">
+              <label class="form-label">Expiry Date</label>
+              <input type="text" class="form-input" placeholder="MM/YY">
+            </div>
+            <div class="form-group">
+              <label class="form-label">CVC</label>
+              <input type="text" class="form-input" placeholder="123">
+            </div>
+          </div>
+        </div>
+
+        <div class="nav-buttons">
+          <button class="btn-back" onclick="prevStep()">
+            <i data-lucide="chevron-left"></i> Back
+          </button>
+          <button class="btn-continue" onclick="completeBooking()">
+            Complete Booking <i data-lucide="check"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Success Screen -->
+      <div class="success-screen" id="successScreen">
+        <div class="success-icon"><i data-lucide="check"></i></div>
+        <h2 class="success-title">BOOKING CONFIRMED!</h2>
+        <p class="success-message">
+          We've sent a confirmation email to your inbox.<br>
+          See you soon!
+        </p>
+        <a href="/demo" class="btn-continue">Back to Home</a>
+      </div>
+    </div>
+
+    <!-- Booking Summary Sidebar -->
+    <aside class="summary" id="summaryPanel">
+      <h3 class="summary-title">BOOKING SUMMARY</h3>
+      <div class="summary-empty" id="summaryEmpty">Select a service to see your booking summary</div>
+      <div class="summary-items" id="summaryItems" style="display: none;"></div>
+      <div class="summary-divider" id="summaryDivider" style="display: none;"></div>
+      <div class="summary-total" id="summaryTotal" style="display: none;">
+        <span>Total</span>
+        <span class="summary-total-price" id="summaryTotalPrice">$0</span>
+      </div>
+      <div class="summary-trust">
+        <div class="trust-item"><i data-lucide="shield"></i> Secure payment with Stripe</div>
+        <div class="trust-item"><i data-lucide="check"></i> Free cancellation 24h before</div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Mobile Summary Bar -->
+  <div class="mobile-summary" id="mobileSummary">
+    <div class="mobile-summary-drawer" id="mobileDrawer">
+      <div class="mobile-drawer-header" onclick="toggleMobileDrawer()">
+        <span class="mobile-drawer-title">Booking Summary</span>
+        <i data-lucide="chevron-down" class="mobile-drawer-icon"></i>
+      </div>
+      <div class="mobile-drawer-content" id="mobileDrawerContent"></div>
+    </div>
+    <div class="mobile-summary-content">
+      <div class="mobile-summary-info" onclick="toggleMobileDrawer()">
+        <div class="mobile-summary-label">Total <i data-lucide="chevron-up" style="width:12px;height:12px;"></i></div>
+        <div class="mobile-summary-price" id="mobileTotalPrice">$0</div>
+      </div>
+      <button class="btn-continue" id="mobileContinueBtn" onclick="mobileNextStep()">
+        Continue <i data-lucide="chevron-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile drawer overlay -->
+  <div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileDrawer()"></div>
+
+  <script>
+    // Data
+    const services = [
+      {
+        id: 'eco-wash',
+        name: 'ECO Wash Package',
+        price: 79,
+        description: 'Waterless hand wash exterior with premium eco-friendly products',
+        duration: '45 min',
+        icon: 'droplets',
+        features: ['Waterless Ceramic Hand Wash', 'Vacuum Interior', 'Dashboard Wipe Down', 'Windows Inside & Out', 'Mirrors & Door Jambs']
+      },
+      {
+        id: 'complete-detail',
+        name: 'Complete Detail',
+        price: 249,
+        description: 'Full interior and exterior detail - our most popular service',
+        duration: '3 hours',
+        icon: 'sparkles',
+        popular: true,
+        features: ['Everything in ECO Wash', 'Full Interior Detail', 'Leather Conditioning', 'ECO Wax Protection', 'Exterior Speed Polish', 'Tire & Wheel Cleaning']
+      },
+      {
+        id: 'interior-detail',
+        name: 'Interior Detail',
+        price: 149,
+        description: 'Deep clean with steam, odor elimination, and leather treatment',
+        duration: '2 hours',
+        icon: 'sofa',
+        features: ['ECO Wash Included', 'Cup Holders, Vents & Crevices', 'Floor Mats, Carpets & Seats', 'Trunk & Lining', 'Leather Treatment', 'Odor Elimination']
+      },
+      {
+        id: 'ceramic-coating',
+        name: 'Ceramic Coating',
+        price: 599,
+        description: 'Professional-grade protection with hydrophobic finish',
+        duration: '1 day',
+        icon: 'shield',
+        features: ['Multi-stage Process', 'Ultimate Paint Protection', 'Scratch and Swirl Removal', '1-5 Year Protection', 'Hydrophobic Finish', 'UV Protection']
+      },
+      {
+        id: 'paint-correction',
+        name: 'Paint Correction',
+        price: 399,
+        description: 'Multi-stage polish to remove scratches and swirls',
+        duration: '4-6 hours',
+        icon: 'paintbrush',
+        features: ['Paint Inspection', 'Clay Bar Treatment', 'Multi-Stage Polish', 'Swirl Removal', 'Mirror Finish', 'Sealant Application']
+      }
+    ];
+
+    const vehicleTypes = [
+      { id: 'sedan', name: 'Sedan / Coupe', description: 'Standard vehicles', multiplier: 1 },
+      { id: 'suv', name: 'SUV / Crossover', description: '+20% for larger vehicles', multiplier: 1.2 },
+      { id: 'truck', name: 'Truck / Van', description: '+30% for trucks and vans', multiplier: 1.3 },
+      { id: 'luxury', name: 'Luxury / Exotic', description: 'Premium care for high-end vehicles', multiplier: 1.5 }
+    ];
+
+    const addons = [
+      { id: 'headlight', name: 'Headlight Restoration', price: 49 },
+      { id: 'engine', name: 'Engine Bay Detail', price: 79 },
+      { id: 'pet-hair', name: 'Pet Hair Removal', price: 39 },
+      { id: 'odor', name: 'Odor Elimination', price: 49 },
+      { id: 'scratch', name: 'Scratch Removal (per panel)', price: 99 }
+    ];
+
+    const locations = [
+      { id: 'weho', name: 'West Hollywood', address: '8500 Sunset Blvd, West Hollywood, CA 90069' },
+      { id: 'hollywood', name: 'Hollywood', address: '7741 Santa Monica Blvd, Los Angeles, CA 90046' },
+      { id: 'dtla', name: 'Downtown LA', address: '456 S Grand Ave, Los Angeles, CA 90071' }
+    ];
+
+    // State
+    let currentStep = 1;
+    let booking = {
+      service: null,
+      vehicleType: null,
+      vehicleInfo: {},
+      addons: [],
+      date: null,
+      time: null,
+      location: null,
+      contact: {}
+    };
+
+    // Check URL params for pre-selected package
+    const urlParams = new URLSearchParams(window.location.search);
+    const preSelectedPackage = urlParams.get('package');
+
+    // Initialize
+    function init() {
+      renderServices();
+      renderVehicleTypes();
+      renderAddons();
+      renderDates();
+      renderTimes();
+      renderLocations();
+      lucide.createIcons();
+
+      // If package pre-selected, skip to step 2
+      if (preSelectedPackage) {
+        const service = services.find(s => s.id === preSelectedPackage);
+        if (service) {
+          booking.service = service;
+          currentStep = 2;
+          updateProgress();
+          updateStepVisibility();
+          updateSummary();
+        }
+      }
+    }
+
+    // Render Services
+    function renderServices() {
+      const container = document.getElementById('serviceList');
+      container.innerHTML = services.map(service => `
+        <div class="service-card ${booking.service?.id === service.id ? 'selected' : ''}" data-service="${service.id}" onclick="selectService('${service.id}')">
+          <div class="service-card-header">
+            <div class="service-icon"><i data-lucide="${service.icon}"></i></div>
+            <div class="service-info">
+              <div class="service-name-row">
+                <span class="service-name">${service.name}</span>
+                ${service.popular ? '<span class="service-badge">Popular</span>' : ''}
+              </div>
+              <div class="service-desc">${service.description}</div>
+              <div class="service-meta">
+                <i data-lucide="clock" style="width:14px;height:14px;"></i>
+                ${service.duration}
+              </div>
+            </div>
+            <span class="service-price">$${service.price}</span>
+            <div class="service-radio"></div>
+          </div>
+          <button class="service-expand-btn" onclick="event.stopPropagation(); toggleServiceDetails('${service.id}')">
+            <span>What's included</span>
+            <i data-lucide="chevron-down" style="width:16px;height:16px;"></i>
+          </button>
+          <div class="service-details">
+            <ul class="service-features">
+              ${service.features.map(f => `<li>${f}</li>`).join('')}
+            </ul>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleServiceDetails(serviceId) {
+      const card = document.querySelector(`[data-service="${serviceId}"]`);
+      card.classList.toggle('expanded');
+      lucide.createIcons();
+    }
+
+    function selectService(serviceId) {
+      booking.service = services.find(s => s.id === serviceId);
+      document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
+      document.querySelector(`[data-service="${serviceId}"]`).classList.add('selected');
+      document.getElementById('continueBtn1').disabled = false;
+      updateSummary();
+    }
+
+    // Render Vehicle Types
+    function renderVehicleTypes() {
+      const container = document.getElementById('vehicleTypes');
+      container.innerHTML = vehicleTypes.map(vt => `
+        <div class="vehicle-card ${booking.vehicleType?.id === vt.id ? 'selected' : ''}" onclick="selectVehicleType('${vt.id}')">
+          <div class="vehicle-card-header">
+            <span class="vehicle-name">${vt.name}</span>
+            <span class="vehicle-check"><i data-lucide="check" style="width:18px;height:18px;"></i></span>
+          </div>
+          <div class="vehicle-price">${vt.description}</div>
+        </div>
+      `).join('');
+    }
+
+    function selectVehicleType(typeId) {
+      booking.vehicleType = vehicleTypes.find(v => v.id === typeId);
+      document.querySelectorAll('.vehicle-card').forEach(c => c.classList.remove('selected'));
+      document.querySelector(`.vehicle-card:nth-child(${vehicleTypes.findIndex(v => v.id === typeId) + 1})`).classList.add('selected');
+      updateSummary();
+      lucide.createIcons();
+    }
+
+    // Render Addons
+    function renderAddons() {
+      const container = document.getElementById('addonsList');
+      container.innerHTML = addons.map(addon => `
+        <div class="addon-card ${booking.addons.includes(addon.id) ? 'selected' : ''}" onclick="toggleAddon('${addon.id}')">
+          <span class="addon-name">${addon.name}</span>
+          <div class="addon-right">
+            <span class="addon-price">+$${addon.price}</span>
+            <div class="addon-check"><i data-lucide="check" style="width:14px;height:14px;"></i></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleAddon(addonId) {
+      const idx = booking.addons.indexOf(addonId);
+      if (idx > -1) {
+        booking.addons.splice(idx, 1);
+      } else {
+        booking.addons.push(addonId);
+      }
+      renderAddons();
+      updateSummary();
+      lucide.createIcons();
+    }
+
+    // Render Dates
+    function renderDates() {
+      const container = document.getElementById('dateSelector');
+      const dates = [];
+      const today = new Date();
+      for (let i = 0; i < 14; i++) {
+        const date = new Date(today);
+        date.setDate(today.getDate() + i);
+        dates.push(date);
+      }
+      container.innerHTML = dates.map((date, i) => {
+        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const isToday = i === 0;
+        const dateStr = date.toISOString().split('T')[0];
+        return `
+          <div class="date-card ${isToday ? 'today' : ''} ${booking.date === dateStr ? 'selected' : ''}" onclick="selectDate('${dateStr}')">
+            <div class="date-day">${dayNames[date.getDay()]}</div>
+            <div class="date-num">${date.getDate()}</div>
+            <div class="date-month">${monthNames[date.getMonth()]}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function selectDate(dateStr) {
+      booking.date = dateStr;
+      renderDates();
+      // Show urgency for today
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('urgencyBanner').style.display = dateStr === today ? 'flex' : 'none';
+      checkStep3();
+    }
+
+    // Render Times
+    function renderTimes() {
+      const container = document.getElementById('timeSelector');
+      const times = ['8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'];
+      const limitedSlots = ['11:00 AM', '2:00 PM'];
+      container.innerHTML = times.map(time => `
+        <div class="time-slot ${booking.time === time ? 'selected' : ''}" onclick="selectTime('${time}')">
+          ${time}
+          ${limitedSlots.includes(time) ? '<div class="time-slot-limited">2 slots left</div>' : ''}
+        </div>
+      `).join('');
+    }
+
+    function selectTime(time) {
+      booking.time = time;
+      renderTimes();
+      checkStep3();
+    }
+
+    function checkStep3() {
+      document.getElementById('continueBtn3').disabled = !(booking.date && booking.time);
+    }
+
+    // Render Locations
+    function renderLocations() {
+      const container = document.getElementById('locationList');
+      container.innerHTML = locations.map(loc => `
+        <div class="location-card ${booking.location === loc.id ? 'selected' : ''}" onclick="selectLocation('${loc.id}')">
+          <div class="location-name">
+            <i data-lucide="map-pin" style="width:18px;height:18px;color:var(--champagne-500);"></i>
+            ${loc.name}
+          </div>
+          <div class="location-address">${loc.address}</div>
+        </div>
+      `).join('');
+    }
+
+    function selectLocation(locId) {
+      booking.location = locId;
+      renderLocations();
+      document.getElementById('continueBtn4').disabled = false;
+      lucide.createIcons();
+    }
+
+    // Summary
+    function updateSummary() {
+      const empty = document.getElementById('summaryEmpty');
+      const items = document.getElementById('summaryItems');
+      const divider = document.getElementById('summaryDivider');
+      const total = document.getElementById('summaryTotal');
+      const mobileDrawerContent = document.getElementById('mobileDrawerContent');
+
+      if (!booking.service) {
+        empty.style.display = 'block';
+        items.style.display = 'none';
+        divider.style.display = 'none';
+        total.style.display = 'none';
+        mobileDrawerContent.innerHTML = '<div style="color: var(--obsidian-500); text-align: center; padding: 1rem 0;">Select a service to see your booking summary</div>';
+        return;
+      }
+
+      empty.style.display = 'none';
+      items.style.display = 'block';
+      divider.style.display = 'block';
+      total.style.display = 'flex';
+
+      let html = `<div class="summary-item"><span class="summary-item-name">${booking.service.name}</span><span class="summary-item-price">$${booking.service.price}</span></div>`;
+      let mobileHtml = `<div class="mobile-drawer-item"><span class="mobile-drawer-item-name">${booking.service.name}</span><span class="mobile-drawer-item-price">$${booking.service.price}</span></div>`;
+
+      if (booking.vehicleType && booking.vehicleType.multiplier > 1) {
+        const adj = Math.round(booking.service.price * (booking.vehicleType.multiplier - 1));
+        html += `<div class="summary-item addon"><span class="summary-item-name">${booking.vehicleType.name} adjustment</span><span class="summary-item-price">+$${adj}</span></div>`;
+        mobileHtml += `<div class="mobile-drawer-item addon"><span class="mobile-drawer-item-name">${booking.vehicleType.name} adjustment</span><span class="mobile-drawer-item-price">+$${adj}</span></div>`;
+      }
+
+      booking.addons.forEach(addonId => {
+        const addon = addons.find(a => a.id === addonId);
+        html += `<div class="summary-item addon"><span class="summary-item-name">${addon.name}</span><span class="summary-item-price">+$${addon.price}</span></div>`;
+        mobileHtml += `<div class="mobile-drawer-item addon"><span class="mobile-drawer-item-name">${addon.name}</span><span class="mobile-drawer-item-price">+$${addon.price}</span></div>`;
+      });
+
+      items.innerHTML = html;
+      mobileDrawerContent.innerHTML = mobileHtml;
+
+      const totalPrice = calculateTotal();
+      document.getElementById('summaryTotalPrice').textContent = `$${totalPrice}`;
+      document.getElementById('mobileTotalPrice').textContent = `$${totalPrice}`;
+      document.getElementById('paymentTotal').textContent = `$${totalPrice}`;
+    }
+
+    // Mobile drawer toggle
+    function toggleMobileDrawer() {
+      const mobileSummary = document.getElementById('mobileSummary');
+      const overlay = document.getElementById('mobileOverlay');
+      const isOpen = mobileSummary.classList.contains('drawer-open');
+
+      if (isOpen) {
+        mobileSummary.classList.remove('drawer-open');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+      } else {
+        mobileSummary.classList.add('drawer-open');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        lucide.createIcons();
+      }
+    }
+
+    function calculateTotal() {
+      if (!booking.service) return 0;
+      let total = booking.service.price;
+      if (booking.vehicleType) {
+        total = Math.round(total * booking.vehicleType.multiplier);
+      }
+      booking.addons.forEach(addonId => {
+        const addon = addons.find(a => a.id === addonId);
+        total += addon.price;
+      });
+      return total;
+    }
+
+    // Navigation
+    function nextStep() {
+      if (currentStep < 6) {
+        currentStep++;
+        updateProgress();
+        updateStepVisibility();
+        window.scrollTo(0, 0);
+      }
+    }
+
+    function prevStep() {
+      if (currentStep > 1) {
+        currentStep--;
+        updateProgress();
+        updateStepVisibility();
+        window.scrollTo(0, 0);
+      }
+    }
+
+    function mobileNextStep() {
+      // Close drawer if open
+      const mobileSummary = document.getElementById('mobileSummary');
+      const overlay = document.getElementById('mobileOverlay');
+      if (mobileSummary.classList.contains('drawer-open')) {
+        mobileSummary.classList.remove('drawer-open');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+      }
+      nextStep();
+    }
+
+    function updateProgress() {
+      document.querySelectorAll('.progress-step').forEach((step, idx) => {
+        const stepNum = idx + 1;
+        step.classList.remove('active', 'completed');
+        if (stepNum === currentStep) {
+          step.classList.add('active');
+        } else if (stepNum < currentStep) {
+          step.classList.add('completed');
+        }
+      });
+
+      document.querySelectorAll('.progress-line').forEach((line, idx) => {
+        line.classList.toggle('completed', idx < currentStep - 1);
+      });
+    }
+
+    function updateStepVisibility() {
+      document.querySelectorAll('.step-content').forEach(step => {
+        step.classList.remove('active');
+      });
+      const activeStep = document.querySelector(`.step-content[data-step="${currentStep}"]`);
+      if (activeStep) activeStep.classList.add('active');
+      lucide.createIcons();
+    }
+
+    function completeBooking() {
+      document.querySelectorAll('.step-content').forEach(s => s.classList.remove('active'));
+      document.getElementById('successScreen').classList.add('active');
+      document.getElementById('progressBar').style.display = 'none';
+      document.querySelector('.summary').style.display = 'none';
+      document.querySelector('.mobile-summary').style.display = 'none';
+    }
+
+    // Init
+    init();
+  </script>
+</body>
+</html>

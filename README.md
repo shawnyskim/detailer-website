@@ -1,4 +1,4 @@
-# DetailStack - Car Detailing Website Service
+# DetailerStack - Car Detailing Website Service
 
 A modern, minimal landing page for a service that creates websites and marketing systems for car detailing businesses. Built with Next.js 14, TypeScript, Tailwind CSS, and Framer Motion.
 
@@ -111,7 +111,7 @@ detailer-website/
 ## Customization
 
 ### Update Brand Name
-The brand name "DetailStack" appears in:
+The brand name "DetailerStack" appears in:
 - [Navbar.tsx](components/Navbar.tsx)
 - [Footer.tsx](components/Footer.tsx)
 - [layout.tsx](app/layout.tsx) (metadata)
