@@ -8,8 +8,8 @@ A modern, minimal landing page for a service that creates websites and marketing
 - Fully responsive (mobile, tablet, desktop)
 - Smooth scroll animations with Framer Motion
 - Fixed/sticky navigation with smooth scrolling
-- Interactive application form
-- Optimized for static export (deployment-ready)
+- Interactive application form with Airtable + Resend integration
+- Server-side API routes for form submission
 - TypeScript for type safety
 - Tailwind CSS for styling
 
@@ -44,14 +44,6 @@ npm run build
 
 # Start the production server
 npm start
-```
-
-### Export Static Site
-
-The project is configured for static export. The build command will automatically generate a static site in the `out` directory.
-
-```bash
-npm run build
 ```
 
 ## Project Structure
@@ -122,19 +114,25 @@ Colors are defined in:
 - [globals.css](app/globals.css) (CSS variables)
 
 ### Form Submission
-The [ApplicationForm.tsx](components/ApplicationForm.tsx) currently logs data to console. To connect to a backend:
-1. Replace the `console.log` in `handleSubmit` with your API call
-2. Or integrate with services like Formspree, Basin, or Netlify Forms
+The application form submits to `/api/submit-application` which:
+1. Stores submissions in Airtable
+2. Sends email notifications via Resend
+
+Required environment variables:
+- `AIRTABLE_API_KEY` - Airtable personal access token
+- `AIRTABLE_BASE_ID` - Airtable base ID
+- `AIRTABLE_TABLE_NAME` - Table name (e.g., "Applications")
+- `RESEND_API_KEY` - Resend API key
+- `RESEND_FROM_EMAIL` - Sender email address
+- `NOTIFICATION_EMAIL` - Email to receive notifications
 
 ## Deployment
 
-This site can be deployed to:
-- Vercel (recommended for Next.js)
-- Netlify
-- GitHub Pages
-- Any static hosting service
+This site must be deployed to a platform that supports Next.js server-side features:
+- **Vercel** (recommended)
+- Netlify (with Next.js adapter)
 
-The `next.config.ts` is configured for static export with `output: 'export'`.
+**IMPORTANT:** Do NOT add `output: 'export'` to `next.config.ts`. This would disable API routes and break form submission. The site requires server-side functionality for the Airtable/Resend integration.
 
 ## License
 

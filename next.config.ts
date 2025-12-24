@@ -5,6 +5,18 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  async rewrites() {
+    return [
+      {
+        source: '/portal',
+        destination: '/portal.html',
+      },
+      {
+        source: '/portal/',
+        destination: '/portal.html',
+      },
+    ];
+  },
 };
 
 export default nextConfig;

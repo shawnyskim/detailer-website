@@ -22,7 +22,7 @@ export default function OfferSection() {
             <ul className="space-y-4">
               <li className="flex items-start">
                 <span className="text-accent mr-3">→</span>
-                <span className="text-text-secondary">Custom website built in 2 weeks (not a template)</span>
+                <span className="text-text-secondary">Custom website optimized for mobile built in 3 weeks (not a template)</span>
               </li>
               <li className="flex items-start">
                 <span className="text-accent mr-3">→</span>

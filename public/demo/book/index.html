@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Book Your Detail - DetailStack</title>
+  <title>Book Your Detail - DetailerStack</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Oswald:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -153,6 +153,15 @@
       background: var(--obsidian-800);
       border-color: var(--champagne-500);
       color: var(--champagne-500);
+    }
+
+    .progress-step.clickable {
+      cursor: pointer;
+    }
+
+    .progress-step.clickable .progress-icon:hover {
+      transform: scale(1.1);
+      box-shadow: 0 0 0 3px rgba(201, 166, 107, 0.2);
     }
 
     .progress-label {
@@ -501,88 +510,386 @@
       color: var(--obsidian-950);
     }
 
-    /* Date Selection - Mobile Optimized */
-    .date-section { margin-bottom: 2rem; }
-    .date-label { font-weight: 500; margin-bottom: 1rem; }
-
-    .date-scroll {
+    /* Calendly-Style Calendar & Time Selection */
+    .datetime-container {
       display: flex;
-      gap: 0.75rem;
-      overflow-x: auto;
-      padding-bottom: 0.5rem;
-      -webkit-overflow-scrolling: touch;
+      flex-direction: column;
+      gap: 1.5rem;
     }
 
-    .date-card {
-      min-width: 80px;
-      padding: 1rem;
+    @media (min-width: 768px) {
+      .datetime-container {
+        flex-direction: row;
+        gap: 0;
+      }
+    }
+
+    /* Calendar Section */
+    .calendar-section {
+      flex: 1;
+    }
+
+    .calendar-section-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 1rem;
+    }
+
+    .calendar-container {
       background: var(--obsidian-900);
       border: 1px solid var(--obsidian-800);
-      border-radius: 8px;
+      border-radius: 12px;
+      padding: 1.25rem;
+    }
+
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .calendar-month-year {
+      font-weight: 600;
+      font-size: 1rem;
+      color: #fff;
+      min-width: 140px;
+      text-align: center;
+    }
+
+    .calendar-nav-btn {
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--obsidian-400);
+      transition: all 0.2s;
+    }
+
+    .calendar-nav-btn:hover {
+      background: var(--obsidian-800);
+      color: #fff;
+    }
+
+    .calendar-nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .calendar-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      margin-bottom: 0.5rem;
+    }
+
+    .calendar-weekday {
+      text-align: center;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--obsidian-500);
+      padding: 0.5rem 0;
+      text-transform: uppercase;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+    }
+
+    .calendar-day {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border-radius: 50%;
+      cursor: default;
+      transition: all 0.15s;
+      position: relative;
+      color: var(--obsidian-600);
+    }
+
+    .calendar-day.available {
+      color: #3b82f6;
+      background: rgba(59, 130, 246, 0.1);
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .calendar-day.available:hover {
+      background: rgba(59, 130, 246, 0.2);
+    }
+
+    .calendar-day.today::after {
+      content: '';
+      position: absolute;
+      bottom: 3px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 4px;
+      height: 4px;
+      background: currentColor;
+      border-radius: 50%;
+    }
+
+    .calendar-day.selected {
+      background: #3b82f6 !important;
+      color: #fff !important;
+    }
+
+    .calendar-day.selected::after {
+      display: none;
+    }
+
+    .calendar-day.unavailable {
+      color: var(--obsidian-700);
+    }
+
+    /* Time Panel - Desktop Side */
+    .time-panel {
+      display: none;
+      flex: 0 0 280px;
+      padding-left: 1.5rem;
+      border-left: 1px solid var(--obsidian-800);
+    }
+
+    @media (min-width: 768px) {
+      .time-panel {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .time-panel:not(.has-date) {
+        opacity: 0.4;
+        pointer-events: none;
+      }
+
+      .time-panel:not(.has-date) .time-slots-list {
+        display: none;
+      }
+    }
+
+    .time-panel-header {
+      margin-bottom: 1rem;
+    }
+
+    .time-panel-date {
+      font-weight: 600;
+      font-size: 1rem;
+      color: #fff;
+      margin-bottom: 0.75rem;
+    }
+
+    .time-panel-availability {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--obsidian-400);
+    }
+
+    .availability-dot {
+      width: 8px;
+      height: 8px;
+      background: #22c55e;
+      border-radius: 50%;
+    }
+
+    .time-slots-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      max-height: 340px;
+      overflow-y: auto;
+    }
+
+    .time-slot-row {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .time-slot {
+      flex: 1;
+      padding: 0.875rem 1rem;
+      background: transparent;
+      border: 1px solid var(--obsidian-600);
+      border-radius: 6px;
       text-align: center;
       cursor: pointer;
+      font-weight: 600;
+      font-size: 0.875rem;
+      color: #3b82f6;
+      transition: all 0.15s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .time-slot::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: #22c55e;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .time-slot:hover {
+      border-color: #3b82f6;
+      background: rgba(59, 130, 246, 0.1);
+    }
+
+    .time-slot.selected {
+      background: var(--obsidian-700);
+      border-color: var(--obsidian-600);
+      color: #fff;
+    }
+
+    .time-slot.selected::before {
+      display: none;
+    }
+
+    .time-slot-next {
+      flex: 0 0 auto;
+      padding: 0.875rem 1.25rem;
+      background: #3b82f6;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.15s;
+      display: none;
+    }
+
+    .time-slot-next.visible {
+      display: block;
+    }
+
+    .time-slot-next:hover {
+      background: #2563eb;
+    }
+
+    /* Mobile Time View */
+    .mobile-time-view {
+      display: none;
+      background: var(--obsidian-950);
+      padding-top: 0.5rem;
+    }
+
+    .mobile-time-view.visible {
+      display: block;
+    }
+
+    .mobile-time-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .mobile-back-btn {
+      width: 40px;
+      height: 40px;
+      background: var(--obsidian-800);
+      border: 1px solid var(--obsidian-700);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--obsidian-400);
       transition: all 0.2s;
       flex-shrink: 0;
     }
 
-    .date-card:hover { border-color: var(--obsidian-600); }
-    .date-card.selected { border-color: var(--champagne-500); background: rgba(201, 166, 107, 0.1); }
-    .date-card.today { border-color: var(--champagne-500); }
-
-    .date-day {
-      font-size: 0.75rem;
-      color: var(--obsidian-400);
-      text-transform: uppercase;
-      margin-bottom: 0.25rem;
+    .mobile-back-btn:hover {
+      background: var(--obsidian-700);
+      color: #fff;
     }
 
-    .date-num {
-      font-size: 1.25rem;
+    .mobile-time-info {
+      flex: 1;
+    }
+
+    .mobile-time-day {
       font-weight: 600;
+      font-size: 1.1rem;
+      color: #fff;
     }
 
-    .date-card.selected .date-day,
-    .date-card.selected .date-num { color: var(--champagne-500); }
-
-    .date-month {
-      font-size: 0.7rem;
-      color: var(--obsidian-500);
-      margin-top: 0.25rem;
+    .mobile-time-date {
+      font-size: 0.85rem;
+      color: var(--obsidian-400);
     }
 
-    /* Time Selection - Mobile Optimized */
-    .time-section { margin-bottom: 2rem; }
-
-    .time-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.75rem;
+    .mobile-time-section-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--obsidian-800);
     }
 
-    @media (min-width: 640px) {
-      .time-grid { grid-template-columns: repeat(3, 1fr); }
+    .mobile-time-availability {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--obsidian-400);
+      margin-bottom: 1rem;
     }
 
-    .time-slot {
-      padding: 1rem;
-      background: var(--obsidian-900);
-      border: 1px solid var(--obsidian-800);
-      border-radius: 8px;
-      text-align: center;
-      cursor: pointer;
-      font-weight: 500;
-      transition: all 0.2s;
+    .mobile-time-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
     }
 
-    .time-slot:hover { border-color: var(--obsidian-600); }
-    .time-slot.selected { border-color: var(--champagne-500); background: var(--champagne-500); color: var(--obsidian-950); }
-    .time-slot.unavailable { opacity: 0.4; cursor: not-allowed; }
+    /* Desktop shows time panel, mobile hides it */
+    @media (max-width: 767px) {
+      .calendar-section.hidden-mobile {
+        display: none;
+      }
 
-    .time-slot-limited {
-      font-size: 0.7rem;
-      color: #ef4444;
-      margin-top: 0.25rem;
+      .time-panel {
+        display: none !important;
+      }
+
+      .datetime-container {
+        display: block;
+      }
+
+      /* Hide step title/subtitle when in mobile time view */
+      .mobile-time-view.visible ~ .step-title,
+      .mobile-time-view.visible ~ .step-subtitle {
+        display: none;
+      }
     }
+
+    @media (min-width: 768px) {
+      .mobile-time-view {
+        display: none !important;
+      }
+    }
+
+    /* Legacy Date/Time Section styles (keeping for backwards compat) */
+    .date-section { margin-bottom: 2rem; }
+    .date-label { font-weight: 500; margin-bottom: 1rem; }
+    .time-section { display: none; }
+    .time-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
 
     /* Location Cards */
     .location-card {
@@ -681,9 +988,8 @@
 
     .trust-item svg { color: var(--champagne-500); width: 16px; height: 16px; }
 
-    /* Mobile Summary Bar */
-    .mobile-summary {
-      display: none;
+    /* Anchored Bottom Bar (all devices) */
+    .bottom-bar {
       position: fixed;
       bottom: 0;
       left: 0;
@@ -695,22 +1001,44 @@
       transition: all 0.3s ease;
     }
 
-    @media (max-width: 1023px) {
-      .mobile-summary { display: block; }
-      .summary { display: none; }
+    .bottom-bar.hidden {
+      transform: translateY(100%);
     }
 
-    .mobile-summary-content {
+    .bottom-bar-content {
+      max-width: 1200px;
+      margin: 0 auto;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 1rem;
     }
 
-    .mobile-summary-info {
+    .bottom-bar .btn-continue {
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 640px) {
+      .bottom-bar {
+        padding: 1rem;
+        overflow: hidden;
+      }
+      .bottom-bar-content {
+        width: 100%;
+      }
+      .bottom-bar .btn-continue {
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        flex-shrink: 1;
+        min-width: 0;
+      }
+    }
+
+    .bottom-bar-info {
       cursor: pointer;
     }
 
-    .mobile-summary-label {
+    .bottom-bar-label {
       font-size: 0.75rem;
       color: var(--obsidian-400);
       display: flex;
@@ -718,27 +1046,36 @@
       gap: 0.25rem;
     }
 
-    .mobile-summary-price {
+    .bottom-bar-price {
       font-size: 1.25rem;
       font-weight: 600;
       color: var(--champagne-500);
     }
 
-    /* Mobile Drawer */
-    .mobile-summary-drawer {
-      display: none;
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 0.3s ease;
+    /* Hide sidebar summary on mobile, show on desktop */
+    @media (max-width: 1023px) {
+      .summary { display: none; }
     }
 
-    .mobile-summary.drawer-open .mobile-summary-drawer {
-      display: block;
-      max-height: 60vh;
+    /* Mobile Drawer */
+    .mobile-drawer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--obsidian-900);
+      border-top: 1px solid var(--obsidian-700);
+      border-radius: 16px 16px 0 0;
+      padding: 1rem 1.5rem 6rem;
+      z-index: 45;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+      max-height: 70vh;
       overflow-y: auto;
-      margin-bottom: 1rem;
-      padding-bottom: 1rem;
-      border-bottom: 1px solid var(--obsidian-800);
+    }
+
+    .mobile-drawer.open {
+      transform: translateY(0);
     }
 
     .mobile-drawer-header {
@@ -757,15 +1094,10 @@
       letter-spacing: 0.05em;
     }
 
-    .mobile-drawer-icon {
-      width: 20px;
-      height: 20px;
+    .mobile-drawer-close {
+      width: 24px;
+      height: 24px;
       color: var(--obsidian-400);
-      transition: transform 0.3s ease;
-    }
-
-    .mobile-summary.drawer-open .mobile-drawer-icon {
-      transform: rotate(180deg);
     }
 
     .mobile-drawer-content {
@@ -969,6 +1301,422 @@
       margin-bottom: 2rem;
     }
 
+    /* Congrats Overlay */
+    .congrats-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .congrats-overlay.active {
+      display: flex;
+    }
+
+    .congrats-content {
+      text-align: center;
+      padding: 2rem;
+      animation: congratsFadeIn 0.5s ease-out;
+    }
+
+    @keyframes congratsFadeIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .congrats-icon {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      margin: 0 auto 2rem;
+    }
+
+    .congrats-circle {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--champagne-400), var(--champagne-600));
+      animation: congratsPulse 1.5s ease-out infinite;
+    }
+
+    @keyframes congratsPulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.7; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .congrats-icon svg {
+      position: relative;
+      z-index: 1;
+      width: 50px;
+      height: 50px;
+      color: var(--obsidian-950);
+      margin-top: 25px;
+    }
+
+    .congrats-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 2.5rem;
+      letter-spacing: 0.1em;
+      margin-bottom: 1rem;
+      color: #fff;
+    }
+
+    .congrats-message {
+      color: var(--obsidian-400);
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+      max-width: 400px;
+    }
+
+    .congrats-btn {
+      font-size: 1.1rem;
+      padding: 1rem 2rem;
+    }
+
+    /* Confetti animation */
+    .confetti {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: var(--champagne-500);
+      animation: confettiFall 3s ease-out forwards;
+    }
+
+    @keyframes confettiFall {
+      0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    }
+
+    /* Purchased Services List */
+    .purchased-service-card {
+      background: var(--obsidian-900);
+      border: 2px solid var(--obsidian-700);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .purchased-service-card:hover {
+      border-color: var(--obsidian-600);
+    }
+
+    .purchased-service-card.selected {
+      border-color: var(--champagne-500);
+      background: rgba(201, 166, 107, 0.1);
+    }
+
+    .purchased-service-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .purchased-service-name {
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .purchased-service-check {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid var(--obsidian-600);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .purchased-service-card.selected .purchased-service-check {
+      background: var(--champagne-500);
+      border-color: var(--champagne-500);
+    }
+
+    .purchased-service-check svg {
+      width: 14px;
+      height: 14px;
+      color: var(--obsidian-950);
+      opacity: 0;
+    }
+
+    .purchased-service-card.selected .purchased-service-check svg {
+      opacity: 1;
+    }
+
+    .purchased-service-details {
+      font-size: 0.875rem;
+      color: var(--obsidian-400);
+    }
+
+    .purchased-service-scheduled {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--obsidian-800);
+      font-size: 0.85rem;
+      color: var(--champagne-500);
+    }
+
+    .purchased-service-scheduled svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    /* Multiple Service Selection - Checkbox Style */
+    .service-checkbox {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--obsidian-600);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .service-card.selected .service-checkbox {
+      border-color: var(--champagne-500);
+      background: var(--champagne-500);
+    }
+
+    .service-checkbox svg {
+      width: 14px;
+      height: 14px;
+      color: var(--obsidian-950);
+      opacity: 0;
+    }
+
+    .service-card.selected .service-checkbox svg {
+      opacity: 1;
+    }
+
+    /* Service Add Button */
+    .service-add-btn {
+      display: none;
+      padding: 0.5rem 1rem;
+      background: var(--champagne-500);
+      color: var(--obsidian-950);
+      border: none;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-left: auto;
+    }
+
+    .service-card.selected .service-add-btn {
+      display: block;
+    }
+
+    .service-add-btn:hover {
+      background: var(--champagne-400);
+    }
+
+    /* Bundle Pricing */
+    .service-price-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.125rem;
+    }
+
+    .service-price-original {
+      color: var(--obsidian-500);
+      font-size: 0.875rem;
+      text-decoration: line-through;
+    }
+
+    .service-price-bundle {
+      color: #22c55e;
+      font-weight: 600;
+      font-size: 1.125rem;
+    }
+
+    .service-bundle-badge {
+      background: #22c55e;
+      color: #fff;
+      padding: 0.125rem 0.5rem;
+      font-size: 0.625rem;
+      font-weight: 600;
+      border-radius: 4px;
+      text-transform: uppercase;
+      margin-left: 0.5rem;
+    }
+
+    /* Bundle Upsell Popup */
+    .bundle-upsell-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .bundle-upsell-overlay.active {
+      display: flex;
+    }
+
+    .bundle-upsell-popup {
+      background: var(--obsidian-900);
+      border: 1px solid var(--obsidian-700);
+      border-radius: 12px;
+      max-width: 420px;
+      width: 100%;
+      padding: 2rem;
+      animation: popupSlideIn 0.3s ease-out;
+    }
+
+    @keyframes popupSlideIn {
+      from { opacity: 0; transform: translateY(20px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .bundle-upsell-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .bundle-upsell-save {
+      display: inline-block;
+      background: #22c55e;
+      color: #fff;
+      padding: 0.375rem 1rem;
+      border-radius: 20px;
+      font-size: 0.875rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .bundle-upsell-title {
+      font-family: 'Oswald', sans-serif;
+      font-size: 1.75rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+      color: #fff;
+    }
+
+    .bundle-upsell-subtitle {
+      color: var(--obsidian-400);
+      font-size: 0.95rem;
+    }
+
+    .bundle-upsell-pricing {
+      background: var(--obsidian-800);
+      border-radius: 8px;
+      padding: 1.25rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .bundle-upsell-service-name {
+      font-weight: 600;
+      margin-bottom: 0.75rem;
+      color: #fff;
+    }
+
+    .bundle-upsell-prices {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    .bundle-old-price {
+      font-size: 1.25rem;
+      color: var(--obsidian-500);
+      text-decoration: line-through;
+    }
+
+    .bundle-arrow {
+      color: var(--obsidian-500);
+    }
+
+    .bundle-new-price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #22c55e;
+    }
+
+    .bundle-savings {
+      margin-top: 0.5rem;
+      font-size: 0.875rem;
+      color: #22c55e;
+    }
+
+    .bundle-upsell-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .bundle-add-btn {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .bundle-add-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+    }
+
+    .bundle-skip-btn {
+      width: 100%;
+      padding: 0.875rem;
+      background: transparent;
+      color: var(--obsidian-400);
+      border: 1px solid var(--obsidian-700);
+      border-radius: 8px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .bundle-skip-btn:hover {
+      color: #fff;
+      border-color: var(--obsidian-500);
+    }
+
     /* Responsive - Mobile First Optimizations */
     /* Medium mobile devices (iPhone 12/13/14, Pixel, Galaxy S) - 390-414px */
     @media (max-width: 640px) {
@@ -1118,14 +1866,43 @@
         font-size: 0.9rem;
       }
 
-      /* Date selection mobile */
-      .date-card {
-        min-width: 70px;
-        padding: 0.75rem;
+      /* Calendar mobile */
+      .calendar-container {
+        padding: 1rem;
+        border-radius: 10px;
       }
 
-      .date-num {
-        font-size: 1.125rem;
+      .calendar-header {
+        margin-bottom: 1rem;
+      }
+
+      .calendar-month-year {
+        font-size: 1.1rem;
+      }
+
+      .calendar-nav-btn {
+        width: 32px;
+        height: 32px;
+      }
+
+      .calendar-weekday {
+        font-size: 0.65rem;
+        padding: 0.375rem 0;
+      }
+
+      .calendar-day {
+        font-size: 0.85rem;
+      }
+
+      .time-section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+
+      .selected-date-display {
+        width: 100%;
+        justify-content: center;
       }
 
       /* Time slots mobile - larger touch targets */
@@ -1348,22 +2125,30 @@
         font-size: 0.8rem;
       }
 
-      /* Date cards */
-      .date-card {
-        min-width: 64px;
-        padding: 0.625rem 0.5rem;
+      /* Calendar for 414px */
+      .calendar-container {
+        padding: 0.875rem;
       }
 
-      .date-day {
-        font-size: 0.7rem;
-      }
-
-      .date-num {
+      .calendar-month-year {
         font-size: 1rem;
       }
 
-      .date-month {
-        font-size: 0.65rem;
+      .calendar-nav-btn {
+        width: 30px;
+        height: 30px;
+      }
+
+      .calendar-weekday {
+        font-size: 0.6rem;
+      }
+
+      .calendar-day {
+        font-size: 0.8rem;
+      }
+
+      .selected-date-text {
+        font-size: 0.85rem;
       }
 
       /* Time slots */
@@ -1499,6 +2284,28 @@
         height: 18px;
       }
 
+      /* Calendar for 380px */
+      .calendar-container {
+        padding: 0.75rem;
+      }
+
+      .calendar-month-year {
+        font-size: 0.95rem;
+      }
+
+      .calendar-nav-btn {
+        width: 28px;
+        height: 28px;
+      }
+
+      .calendar-weekday {
+        font-size: 0.55rem;
+      }
+
+      .calendar-day {
+        font-size: 0.75rem;
+      }
+
       /* Time grid - single column on very small screens */
       .time-grid {
         gap: 0.5rem;
@@ -1508,12 +2315,6 @@
         padding: 0.625rem 0.375rem;
         font-size: 0.8rem;
         min-height: 46px;
-      }
-
-      /* Date cards smaller */
-      .date-card {
-        min-width: 56px;
-        padding: 0.5rem 0.375rem;
       }
 
       /* Mobile summary compact */
@@ -1679,11 +2480,7 @@
     <div class="header-content">
       <a href="/demo" class="logo">
         <div class="logo-icon">DS</div>
-        <div class="logo-text"><span>DETAIL</span><span>STACK</span></div>
-      </a>
-      <a href="/demo" class="back-link">
-        <i data-lucide="chevron-left"></i>
-        <span>Back to Home</span>
+        <div class="logo-text"><span>DETAILER</span><span>STACK</span></div>
       </a>
     </div>
   </header>
@@ -1703,39 +2500,32 @@
         </div>
         <div class="progress-line"></div>
         <div class="progress-step" data-step="3">
-          <div class="progress-icon"><i data-lucide="calendar"></i></div>
-          <span class="progress-label">Date & Time</span>
+          <div class="progress-icon"><i data-lucide="credit-card"></i></div>
+          <span class="progress-label">Payment</span>
         </div>
         <div class="progress-line"></div>
         <div class="progress-step" data-step="4">
-          <div class="progress-icon"><i data-lucide="map-pin"></i></div>
-          <span class="progress-label">Location</span>
+          <div class="progress-icon"><i data-lucide="calendar-check"></i></div>
+          <span class="progress-label">Schedule</span>
         </div>
         <div class="progress-line"></div>
         <div class="progress-step" data-step="5">
-          <div class="progress-icon"><i data-lucide="user"></i></div>
-          <span class="progress-label">Details</span>
+          <div class="progress-icon"><i data-lucide="clock"></i></div>
+          <span class="progress-label">Date & Time</span>
         </div>
         <div class="progress-line"></div>
         <div class="progress-step" data-step="6">
-          <div class="progress-icon"><i data-lucide="credit-card"></i></div>
-          <span class="progress-label">Payment</span>
+          <div class="progress-icon"><i data-lucide="map-pin"></i></div>
+          <span class="progress-label">Location</span>
         </div>
       </div>
 
       <!-- Step 1: Service Selection -->
       <div class="step-content active" data-step="1">
-        <h2 class="step-title">CHOOSE YOUR SERVICE</h2>
-        <p class="step-subtitle">Select the detailing package that fits your needs</p>
+        <h2 class="step-title">CHOOSE YOUR SERVICES</h2>
+        <p class="step-subtitle">Select one or more detailing packages</p>
 
         <div id="serviceList"></div>
-
-        <div class="nav-buttons">
-          <div></div>
-          <button class="btn-continue" onclick="nextStep()" id="continueBtn1" disabled>
-            Continue <i data-lucide="chevron-right"></i>
-          </button>
-        </div>
       </div>
 
       <!-- Step 2: Vehicle Information -->
@@ -1763,107 +2553,12 @@
 
         <h3 class="addons-title">Add-ons (Optional)</h3>
         <div id="addonsList"></div>
-
-        <div class="nav-buttons">
-          <button class="btn-back" onclick="prevStep()">
-            <i data-lucide="chevron-left"></i> Back
-          </button>
-          <button class="btn-continue" onclick="nextStep()">
-            Continue <i data-lucide="chevron-right"></i>
-          </button>
-        </div>
       </div>
 
-      <!-- Step 3: Date & Time -->
+      <!-- Step 3: Payment -->
       <div class="step-content" data-step="3">
-        <h2 class="step-title">SELECT DATE & TIME</h2>
-        <p class="step-subtitle">Choose your preferred appointment slot</p>
-
-        <div class="urgency-banner" id="urgencyBanner" style="display: none;">
-          <i data-lucide="clock"></i>
-          <span>Only 2 slots left for today!</span>
-        </div>
-
-        <div class="date-section">
-          <h3 class="date-label">Select Date</h3>
-          <div class="date-scroll" id="dateSelector"></div>
-        </div>
-
-        <div class="time-section">
-          <h3 class="date-label">Select Time</h3>
-          <div class="time-grid" id="timeSelector"></div>
-        </div>
-
-        <div class="nav-buttons">
-          <button class="btn-back" onclick="prevStep()">
-            <i data-lucide="chevron-left"></i> Back
-          </button>
-          <button class="btn-continue" onclick="nextStep()" id="continueBtn3" disabled>
-            Continue <i data-lucide="chevron-right"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Step 4: Location -->
-      <div class="step-content" data-step="4">
-        <h2 class="step-title">SELECT LOCATION</h2>
-        <p class="step-subtitle">Choose where you'd like to have your vehicle detailed</p>
-
-        <div id="locationList"></div>
-
-        <div class="nav-buttons">
-          <button class="btn-back" onclick="prevStep()">
-            <i data-lucide="chevron-left"></i> Back
-          </button>
-          <button class="btn-continue" onclick="nextStep()" id="continueBtn4" disabled>
-            Continue <i data-lucide="chevron-right"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Step 5: Contact Details -->
-      <div class="step-content" data-step="5">
-        <h2 class="step-title">YOUR DETAILS</h2>
-        <p class="step-subtitle">How can we reach you?</p>
-
-        <div class="contact-grid">
-          <div class="form-group">
-            <label class="form-label">First Name</label>
-            <input type="text" class="form-input" id="firstName" placeholder="John">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Last Name</label>
-            <input type="text" class="form-input" id="lastName" placeholder="Doe">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Email</label>
-            <input type="email" class="form-input" id="email" placeholder="john@example.com">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Phone</label>
-            <input type="tel" class="form-input" id="phone" placeholder="(323) 555-1234">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label class="form-label">Special Requests (Optional)</label>
-          <textarea class="form-input" id="notes" rows="3" placeholder="Any special instructions or requests..."></textarea>
-        </div>
-
-        <div class="nav-buttons">
-          <button class="btn-back" onclick="prevStep()">
-            <i data-lucide="chevron-left"></i> Back
-          </button>
-          <button class="btn-continue" onclick="nextStep()">
-            Continue <i data-lucide="chevron-right"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Step 6: Payment -->
-      <div class="step-content" data-step="6">
         <h2 class="step-title">PAYMENT</h2>
-        <p class="step-subtitle">Complete your booking</p>
+        <p class="step-subtitle">Complete your purchase</p>
 
         <div class="payment-info">
           <div class="payment-total">
@@ -1871,6 +2566,27 @@
             <div class="payment-total-amount" id="paymentTotal">$0</div>
           </div>
 
+          <h3 class="addons-title" style="margin-top: 1.5rem;">Contact Information</h3>
+          <div class="contact-grid">
+            <div class="form-group">
+              <label class="form-label">First Name</label>
+              <input type="text" class="form-input" id="firstName" placeholder="John">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Last Name</label>
+              <input type="text" class="form-input" id="lastName" placeholder="Doe">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-input" id="email" placeholder="john@example.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              <input type="tel" class="form-input" id="phone" placeholder="(555) 123-4567">
+            </div>
+          </div>
+
+          <h3 class="addons-title" style="margin-top: 1.5rem;">Payment Details</h3>
           <div class="form-group">
             <label class="form-label">Card Number</label>
             <input type="text" class="form-input" placeholder="4242 4242 4242 4242">
@@ -1886,26 +2602,156 @@
             </div>
           </div>
         </div>
+      </div>
 
-        <div class="nav-buttons">
-          <button class="btn-back" onclick="prevStep()">
-            <i data-lucide="chevron-left"></i> Back
-          </button>
-          <button class="btn-continue" onclick="completeBooking()">
-            Complete Booking <i data-lucide="check"></i>
-          </button>
+      <!-- Step 4: Schedule Your Service -->
+      <div class="step-content" data-step="4">
+        <h2 class="step-title">SCHEDULE YOUR SERVICE</h2>
+        <p class="step-subtitle">Select a service to schedule your appointment</p>
+
+        <div id="purchasedServicesList"></div>
+
+        <!-- Add-ons for selected service -->
+        <div id="scheduleAddonsSection" style="display: none;">
+          <h3 class="addons-title" style="margin-top: 2rem;">Add Extras to This Appointment</h3>
+          <p class="step-subtitle" style="margin-bottom: 1rem;">Enhance your service with these add-ons</p>
+          <div id="scheduleAddonsList"></div>
         </div>
+      </div>
+
+      <!-- Step 5: Date & Time -->
+      <div class="step-content" data-step="5">
+        <h2 class="step-title">SELECT DATE & TIME</h2>
+        <p class="step-subtitle">Choose your preferred appointment slot</p>
+
+        <div class="urgency-banner" id="urgencyBanner" style="display: none;">
+          <i data-lucide="clock"></i>
+          <span>Only 2 slots left for today!</span>
+        </div>
+
+        <!-- Desktop: Side-by-side layout / Mobile: Calendar only -->
+        <div class="datetime-container">
+          <!-- Calendar Section -->
+          <div class="calendar-section" id="calendarSection">
+            <div class="calendar-section-title">Select a Day</div>
+            <div class="calendar-container">
+              <div class="calendar-header">
+                <button class="calendar-nav-btn" id="calendarPrev" onclick="prevMonth()">
+                  <i data-lucide="chevron-left" style="width:18px;height:18px;"></i>
+                </button>
+                <span class="calendar-month-year" id="calendarMonthYear"></span>
+                <button class="calendar-nav-btn" id="calendarNext" onclick="nextMonth()">
+                  <i data-lucide="chevron-right" style="width:18px;height:18px;"></i>
+                </button>
+              </div>
+              <div class="calendar-weekdays">
+                <div class="calendar-weekday">Sun</div>
+                <div class="calendar-weekday">Mon</div>
+                <div class="calendar-weekday">Tue</div>
+                <div class="calendar-weekday">Wed</div>
+                <div class="calendar-weekday">Thu</div>
+                <div class="calendar-weekday">Fri</div>
+                <div class="calendar-weekday">Sat</div>
+              </div>
+              <div class="calendar-grid" id="calendarGrid"></div>
+            </div>
+          </div>
+
+          <!-- Desktop Time Panel (side panel) -->
+          <div class="time-panel" id="timePanel">
+            <div class="time-panel-header">
+              <div class="time-panel-date" id="timePanelDate">Select a date</div>
+              <div class="time-panel-availability">
+                <span class="availability-dot"></span>
+                <span>times you're available</span>
+              </div>
+            </div>
+            <div class="time-slots-list" id="desktopTimeSlots"></div>
+          </div>
+        </div>
+
+        <!-- Mobile Time View (full screen overlay) -->
+        <div class="mobile-time-view" id="mobileTimeView">
+          <div class="mobile-time-header">
+            <button class="mobile-back-btn" onclick="hideMobileTimeView()">
+              <i data-lucide="chevron-left" style="width:20px;height:20px;"></i>
+            </button>
+            <div class="mobile-time-info">
+              <div class="mobile-time-day" id="mobileTimeDay">Wednesday</div>
+              <div class="mobile-time-date" id="mobileTimeDate">December 17, 2025</div>
+            </div>
+          </div>
+          <div class="mobile-time-section-title">Select a Time</div>
+          <div class="mobile-time-availability">
+            <span class="availability-dot"></span>
+            <span>times you're available</span>
+          </div>
+          <div class="mobile-time-grid" id="mobileTimeSlots"></div>
+        </div>
+      </div>
+
+      <!-- Step 6: Location -->
+      <div class="step-content" data-step="6">
+        <h2 class="step-title">SELECT LOCATION</h2>
+        <p class="step-subtitle">Choose where you'd like to have your vehicle detailed</p>
+
+        <div id="locationList"></div>
       </div>
 
       <!-- Success Screen -->
       <div class="success-screen" id="successScreen">
         <div class="success-icon"><i data-lucide="check"></i></div>
-        <h2 class="success-title">BOOKING CONFIRMED!</h2>
+        <h2 class="success-title">APPOINTMENT CONFIRMED!</h2>
         <p class="success-message">
           We've sent a confirmation email to your inbox.<br>
           See you soon!
         </p>
         <a href="/demo" class="btn-continue">Back to Home</a>
+      </div>
+
+      <!-- Congrats Overlay (shows after payment) -->
+      <div class="congrats-overlay" id="congratsOverlay">
+        <div class="congrats-content">
+          <div class="congrats-icon">
+            <div class="congrats-circle"></div>
+            <i data-lucide="check"></i>
+          </div>
+          <h2 class="congrats-title">PAYMENT SUCCESSFUL!</h2>
+          <p class="congrats-message">Thank you for your purchase. Now let's schedule your service.</p>
+          <button class="btn-continue congrats-btn" onclick="closeCongratsAndContinue()">
+            Schedule Now <i data-lucide="chevron-right"></i>
+          </button>
+        </div>
+        <div class="confetti" id="confetti"></div>
+      </div>
+
+      <!-- Bundle Upsell Popup -->
+      <div class="bundle-upsell-overlay" id="bundleUpsellOverlay">
+        <div class="bundle-upsell-popup">
+          <div class="bundle-upsell-header">
+            <div class="bundle-upsell-save">SAVE 10%</div>
+            <h2 class="bundle-upsell-title">5-PACK BUNDLE</h2>
+            <p class="bundle-upsell-subtitle">Get 5 services for the price of 4.5!</p>
+          </div>
+          <div class="bundle-upsell-pricing">
+            <div class="bundle-upsell-service-name" id="bundleServiceName">Complete Detail × 5</div>
+            <div class="bundle-upsell-prices">
+              <span class="bundle-old-price" id="bundleOldPrice">$1,245</span>
+              <span class="bundle-arrow">→</span>
+              <span class="bundle-new-price" id="bundleNewPrice">$1,120</span>
+            </div>
+            <div class="bundle-savings" id="bundleSavings">You save $125!</div>
+          </div>
+          <div class="bundle-upsell-actions">
+            <button class="bundle-add-btn" onclick="addBundleToCart()">
+              <i data-lucide="package"></i>
+              Add 5-Pack Bundle
+            </button>
+            <button class="bundle-skip-btn" onclick="skipBundle()">
+              No thanks, just add single service
+            </button>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -1926,21 +2772,14 @@
     </aside>
   </main>
 
-  <!-- Mobile Summary Bar -->
-  <div class="mobile-summary" id="mobileSummary">
-    <div class="mobile-summary-drawer" id="mobileDrawer">
-      <div class="mobile-drawer-header" onclick="toggleMobileDrawer()">
-        <span class="mobile-drawer-title">Booking Summary</span>
-        <i data-lucide="chevron-down" class="mobile-drawer-icon"></i>
+  <!-- Anchored Bottom Bar (all devices) -->
+  <div class="bottom-bar" id="bottomBar">
+    <div class="bottom-bar-content">
+      <div class="bottom-bar-info" onclick="toggleMobileDrawer()">
+        <div class="bottom-bar-label">Total <i data-lucide="chevron-up" style="width:12px;height:12px;"></i></div>
+        <div class="bottom-bar-price" id="bottomBarPrice">$0</div>
       </div>
-      <div class="mobile-drawer-content" id="mobileDrawerContent"></div>
-    </div>
-    <div class="mobile-summary-content">
-      <div class="mobile-summary-info" onclick="toggleMobileDrawer()">
-        <div class="mobile-summary-label">Total <i data-lucide="chevron-up" style="width:12px;height:12px;"></i></div>
-        <div class="mobile-summary-price" id="mobileTotalPrice">$0</div>
-      </div>
-      <button class="btn-continue" id="mobileContinueBtn" onclick="mobileNextStep()">
+      <button class="btn-continue" id="bottomContinueBtn" onclick="handleContinue()" disabled>
         Continue <i data-lucide="chevron-right"></i>
       </button>
     </div>
@@ -1948,6 +2787,15 @@
 
   <!-- Mobile drawer overlay -->
   <div class="mobile-overlay" id="mobileOverlay" onclick="toggleMobileDrawer()"></div>
+
+  <!-- Mobile Summary Drawer -->
+  <div class="mobile-drawer" id="mobileDrawer">
+    <div class="mobile-drawer-header" onclick="toggleMobileDrawer()">
+      <span class="mobile-drawer-title">Booking Summary</span>
+      <i data-lucide="x" class="mobile-drawer-close"></i>
+    </div>
+    <div class="mobile-drawer-content" id="mobileDrawerContent"></div>
+  </div>
 
   <script>
     // Data
@@ -2016,23 +2864,45 @@
     ];
 
     const locations = [
-      { id: 'weho', name: 'West Hollywood', address: '8500 Sunset Blvd, West Hollywood, CA 90069' },
-      { id: 'hollywood', name: 'Hollywood', address: '7741 Santa Monica Blvd, Los Angeles, CA 90046' },
-      { id: 'dtla', name: 'Downtown LA', address: '456 S Grand Ave, Los Angeles, CA 90071' }
+      { id: 'westside', name: 'Westside', address: '123 Main Street, Anytown, ST 12345' },
+      { id: 'midtown', name: 'Midtown', address: '456 Oak Avenue, Anytown, ST 12345' },
+      { id: 'downtown', name: 'Downtown', address: '789 Commerce Blvd, Anytown, ST 12345' }
     ];
 
     // State
     let currentStep = 1;
     let booking = {
-      service: null,
+      services: [], // Array of {service, isBundle, quantity}
       vehicleType: null,
       vehicleInfo: {},
-      addons: [],
+      addons: [], // Pre-purchase add-ons (kept for compatibility)
       date: null,
       time: null,
       location: null,
-      contact: {}
+      contact: {},
+      selectedScheduleService: null,
+      currentScheduleAddons: [], // Add-ons for current service being scheduled
+      scheduledServices: {} // {serviceId: {date, time, location, addons: []}}
     };
+
+    // Bundle upsell state
+    let pendingService = null; // Service awaiting bundle decision
+
+    // Calendar state
+    let calendarDate = new Date();
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Available days (next 60 days from today, excluding Sundays for demo)
+    const availableDays = new Set();
+    for (let i = 0; i < 60; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() + i);
+      // Make all days except Sundays available (for demo purposes)
+      if (d.getDay() !== 0) {
+        availableDays.add(d.toISOString().split('T')[0]);
+      }
+    }
 
     // Check URL params for pre-selected package
     const urlParams = new URLSearchParams(window.location.search);
@@ -2043,17 +2913,21 @@
       renderServices();
       renderVehicleTypes();
       renderAddons();
-      renderDates();
-      renderTimes();
+      renderCalendar();
       renderLocations();
       lucide.createIcons();
 
-      // If package pre-selected, skip to step 2
+      // If package pre-selected, add to cart and skip to step 2
       if (preSelectedPackage) {
         const service = services.find(s => s.id === preSelectedPackage);
         if (service) {
-          booking.service = service;
+          booking.services.push({
+            service: service,
+            isBundle: false,
+            quantity: 1
+          });
           currentStep = 2;
+          renderServices();
           updateProgress();
           updateStepVisibility();
           updateSummary();
@@ -2061,27 +2935,56 @@
       }
     }
 
+    // Helper to check if service is in cart
+    function isServiceInCart(serviceId) {
+      return booking.services.some(s => s.service.id === serviceId);
+    }
+
+    function getServiceFromCart(serviceId) {
+      return booking.services.find(s => s.service.id === serviceId);
+    }
+
     // Render Services
     function renderServices() {
       const container = document.getElementById('serviceList');
-      container.innerHTML = services.map(service => `
-        <div class="service-card ${booking.service?.id === service.id ? 'selected' : ''}" data-service="${service.id}" onclick="selectService('${service.id}')">
+      container.innerHTML = services.map(service => {
+        const inCart = isServiceInCart(service.id);
+        const cartItem = getServiceFromCart(service.id);
+        const isBundle = cartItem && cartItem.isBundle;
+        const quantity = cartItem ? cartItem.quantity : 1;
+        const bundlePrice = Math.round(service.price * 5 * 0.9);
+
+        return `
+        <div class="service-card ${inCart ? 'selected' : ''}" data-service="${service.id}" onclick="toggleServiceSelection('${service.id}')">
           <div class="service-card-header">
             <div class="service-icon"><i data-lucide="${service.icon}"></i></div>
             <div class="service-info">
               <div class="service-name-row">
                 <span class="service-name">${service.name}</span>
                 ${service.popular ? '<span class="service-badge">Popular</span>' : ''}
+                ${isBundle ? '<span class="service-bundle-badge">5-Pack</span>' : ''}
               </div>
               <div class="service-desc">${service.description}</div>
               <div class="service-meta">
                 <i data-lucide="clock" style="width:14px;height:14px;"></i>
-                ${service.duration}
+                ${service.duration}${isBundle ? ' × 5' : ''}
               </div>
             </div>
-            <span class="service-price">$${service.price}</span>
-            <div class="service-radio"></div>
+            ${isBundle ? `
+              <div class="service-price-container">
+                <span class="service-price-original">$${service.price * 5}</span>
+                <span class="service-price-bundle">$${bundlePrice}</span>
+              </div>
+            ` : `
+              <span class="service-price">$${service.price}</span>
+            `}
+            <div class="service-checkbox"><i data-lucide="check"></i></div>
           </div>
+          ${inCart ? `
+            <button class="service-add-btn" onclick="event.stopPropagation(); showBundleUpsell('${service.id}')">
+              ${isBundle ? 'Bundle Added' : 'Upgrade to 5-Pack'}
+            </button>
+          ` : ''}
           <button class="service-expand-btn" onclick="event.stopPropagation(); toggleServiceDetails('${service.id}')">
             <span>What's included</span>
             <i data-lucide="chevron-down" style="width:16px;height:16px;"></i>
@@ -2092,7 +2995,8 @@
             </ul>
           </div>
         </div>
-      `).join('');
+      `}).join('');
+      lucide.createIcons();
     }
 
     function toggleServiceDetails(serviceId) {
@@ -2101,12 +3005,82 @@
       lucide.createIcons();
     }
 
-    function selectService(serviceId) {
-      booking.service = services.find(s => s.id === serviceId);
-      document.querySelectorAll('.service-card').forEach(c => c.classList.remove('selected'));
-      document.querySelector(`[data-service="${serviceId}"]`).classList.add('selected');
-      document.getElementById('continueBtn1').disabled = false;
+    function toggleServiceSelection(serviceId) {
+      const service = services.find(s => s.id === serviceId);
+      const existingIndex = booking.services.findIndex(s => s.service.id === serviceId);
+
+      if (existingIndex >= 0) {
+        // Remove service from cart
+        booking.services.splice(existingIndex, 1);
+        renderServices();
+        updateSummary();
+        updateBottomBar();
+      } else {
+        // Show bundle upsell popup for new selection
+        pendingService = service;
+        showBundleUpsell(serviceId);
+      }
+    }
+
+    function showBundleUpsell(serviceId) {
+      const service = services.find(s => s.id === serviceId);
+      pendingService = service;
+
+      const originalPrice = service.price * 5;
+      const bundlePrice = Math.round(originalPrice * 0.9);
+      const savings = originalPrice - bundlePrice;
+
+      document.getElementById('bundleServiceName').textContent = `${service.name} × 5`;
+      document.getElementById('bundleOldPrice').textContent = `$${originalPrice}`;
+      document.getElementById('bundleNewPrice').textContent = `$${bundlePrice}`;
+      document.getElementById('bundleSavings').textContent = `You save $${savings}!`;
+
+      document.getElementById('bundleUpsellOverlay').classList.add('active');
+      lucide.createIcons();
+    }
+
+    function addBundleToCart() {
+      if (!pendingService) return;
+
+      // Remove existing single if present
+      const existingIndex = booking.services.findIndex(s => s.service.id === pendingService.id);
+      if (existingIndex >= 0) {
+        booking.services.splice(existingIndex, 1);
+      }
+
+      // Add as bundle
+      booking.services.push({
+        service: pendingService,
+        isBundle: true,
+        quantity: 5
+      });
+
+      document.getElementById('bundleUpsellOverlay').classList.remove('active');
+      pendingService = null;
+      renderServices();
       updateSummary();
+      updateBottomBar();
+    }
+
+    function skipBundle() {
+      if (!pendingService) return;
+
+      // Check if already in cart
+      const existingIndex = booking.services.findIndex(s => s.service.id === pendingService.id);
+      if (existingIndex < 0) {
+        // Add as single
+        booking.services.push({
+          service: pendingService,
+          isBundle: false,
+          quantity: 1
+        });
+      }
+
+      document.getElementById('bundleUpsellOverlay').classList.remove('active');
+      pendingService = null;
+      renderServices();
+      updateSummary();
+      updateBottomBar();
     }
 
     // Render Vehicle Types
@@ -2128,6 +3102,7 @@
       document.querySelectorAll('.vehicle-card').forEach(c => c.classList.remove('selected'));
       document.querySelector(`.vehicle-card:nth-child(${vehicleTypes.findIndex(v => v.id === typeId) + 1})`).classList.add('selected');
       updateSummary();
+      updateBottomBar();
       lucide.createIcons();
     }
 
@@ -2157,49 +3132,154 @@
       lucide.createIcons();
     }
 
-    // Render Dates
-    function renderDates() {
-      const container = document.getElementById('dateSelector');
-      const dates = [];
-      const today = new Date();
-      for (let i = 0; i < 14; i++) {
-        const date = new Date(today);
-        date.setDate(today.getDate() + i);
-        dates.push(date);
+    // Calendar Functions
+    const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+    const monthNamesShort = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    function renderCalendar() {
+      const grid = document.getElementById('calendarGrid');
+      const monthYearLabel = document.getElementById('calendarMonthYear');
+      const prevBtn = document.getElementById('calendarPrev');
+
+      const year = calendarDate.getFullYear();
+      const month = calendarDate.getMonth();
+
+      // Update month/year label
+      monthYearLabel.textContent = `${monthNames[month]} ${year}`;
+
+      // Disable prev button if viewing current month
+      const currentMonth = new Date();
+      prevBtn.disabled = (year === currentMonth.getFullYear() && month === currentMonth.getMonth());
+
+      // Get first day of month and total days
+      const firstDay = new Date(year, month, 1);
+      const lastDay = new Date(year, month + 1, 0);
+      const startingDay = firstDay.getDay();
+      const totalDays = lastDay.getDate();
+
+      // Build calendar grid
+      let html = '';
+
+      // Empty cells before first day
+      for (let i = 0; i < startingDay; i++) {
+        html += '<div class="calendar-day empty"></div>';
       }
-      container.innerHTML = dates.map((date, i) => {
-        const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const isToday = i === 0;
+
+      // Days of the month
+      for (let day = 1; day <= totalDays; day++) {
+        const date = new Date(year, month, day);
         const dateStr = date.toISOString().split('T')[0];
-        return `
-          <div class="date-card ${isToday ? 'today' : ''} ${booking.date === dateStr ? 'selected' : ''}" onclick="selectDate('${dateStr}')">
-            <div class="date-day">${dayNames[date.getDay()]}</div>
-            <div class="date-num">${date.getDate()}</div>
-            <div class="date-month">${monthNames[date.getMonth()]}</div>
-          </div>
-        `;
-      }).join('');
+        const isToday = date.getTime() === today.getTime();
+        const isSelected = booking.date === dateStr;
+        const isAvailable = availableDays.has(dateStr);
+        const isPast = date < today;
+
+        let classes = 'calendar-day';
+        if (isToday) classes += ' today';
+        if (isSelected) classes += ' selected';
+        if (isAvailable && !isPast) {
+          classes += ' available';
+        } else if (isPast || !isAvailable) {
+          classes += ' unavailable';
+        }
+
+        const clickHandler = (isAvailable && !isPast) ? `onclick="selectDate('${dateStr}')"` : '';
+        html += `<div class="${classes}" ${clickHandler}>${day}</div>`;
+      }
+
+      grid.innerHTML = html;
+      lucide.createIcons();
+    }
+
+    function prevMonth() {
+      calendarDate.setMonth(calendarDate.getMonth() - 1);
+      renderCalendar();
+    }
+
+    function nextMonth() {
+      calendarDate.setMonth(calendarDate.getMonth() + 1);
+      renderCalendar();
     }
 
     function selectDate(dateStr) {
       booking.date = dateStr;
-      renderDates();
+      booking.time = null; // Reset time when date changes
+
+      // Update calendar display
+      renderCalendar();
+
+      // Update selected date display
+      const selectedDate = new Date(dateStr + 'T00:00:00');
+      const dayName = dayNames[selectedDate.getDay()];
+      const monthName = monthNames[selectedDate.getMonth()];
+      const formattedDate = `${monthName} ${selectedDate.getDate()}, ${selectedDate.getFullYear()}`;
+
+      // Update desktop time panel
+      const timePanel = document.getElementById('timePanel');
+      timePanel.classList.add('has-date');
+      document.getElementById('timePanelDate').textContent = `${dayName}, ${monthNamesShort[selectedDate.getMonth()]} ${selectedDate.getDate()}`;
+
+      // Update mobile time view
+      document.getElementById('mobileTimeDay').textContent = dayName;
+      document.getElementById('mobileTimeDate').textContent = formattedDate;
+
+      // Render time slots
+      renderTimes();
+
       // Show urgency for today
-      const today = new Date().toISOString().split('T')[0];
-      document.getElementById('urgencyBanner').style.display = dateStr === today ? 'flex' : 'none';
+      const todayStr = today.toISOString().split('T')[0];
+      document.getElementById('urgencyBanner').style.display = dateStr === todayStr ? 'flex' : 'none';
+
+      // On mobile, show the mobile time view
+      if (window.innerWidth < 768) {
+        showMobileTimeView();
+      }
+
+      lucide.createIcons();
+      checkStep3();
+    }
+
+    // Show mobile time view
+    function showMobileTimeView() {
+      const calendarSection = document.getElementById('calendarSection');
+      const mobileTimeView = document.getElementById('mobileTimeView');
+
+      calendarSection.classList.add('hidden-mobile');
+      mobileTimeView.classList.add('visible');
+
+      lucide.createIcons();
+    }
+
+    // Hide mobile time view (back to calendar)
+    function hideMobileTimeView() {
+      const calendarSection = document.getElementById('calendarSection');
+      const mobileTimeView = document.getElementById('mobileTimeView');
+
+      calendarSection.classList.remove('hidden-mobile');
+      mobileTimeView.classList.remove('visible');
+      // Reset time selection if going back
+      booking.time = null;
       checkStep3();
     }
 
     // Render Times
     function renderTimes() {
-      const container = document.getElementById('timeSelector');
-      const times = ['8:00 AM', '9:00 AM', '10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM'];
-      const limitedSlots = ['11:00 AM', '2:00 PM'];
-      container.innerHTML = times.map(time => `
+      const desktopContainer = document.getElementById('desktopTimeSlots');
+      const mobileContainer = document.getElementById('mobileTimeSlots');
+      const times = ['7:30am', '7:45am', '8:00am', '9:00am', '10:00am', '11:00am', '12:00pm', '1:00pm', '2:00pm', '3:00pm', '4:00pm'];
+
+      // Render desktop time slots (simple list, no inline Next button)
+      desktopContainer.innerHTML = times.map(time => `
         <div class="time-slot ${booking.time === time ? 'selected' : ''}" onclick="selectTime('${time}')">
           ${time}
-          ${limitedSlots.includes(time) ? '<div class="time-slot-limited">2 slots left</div>' : ''}
+        </div>
+      `).join('');
+
+      // Render mobile time slots (same pattern)
+      mobileContainer.innerHTML = times.map(time => `
+        <div class="time-slot ${booking.time === time ? 'selected' : ''}" onclick="selectTime('${time}')">
+          ${time}
         </div>
       `).join('');
     }
@@ -2211,7 +3291,7 @@
     }
 
     function checkStep3() {
-      document.getElementById('continueBtn3').disabled = !(booking.date && booking.time);
+      updateBottomBar();
     }
 
     // Render Locations
@@ -2231,7 +3311,7 @@
     function selectLocation(locId) {
       booking.location = locId;
       renderLocations();
-      document.getElementById('continueBtn4').disabled = false;
+      updateBottomBar();
       lucide.createIcons();
     }
 
@@ -2243,7 +3323,7 @@
       const total = document.getElementById('summaryTotal');
       const mobileDrawerContent = document.getElementById('mobileDrawerContent');
 
-      if (!booking.service) {
+      if (booking.services.length === 0) {
         empty.style.display = 'block';
         items.style.display = 'none';
         divider.style.display = 'none';
@@ -2257,11 +3337,23 @@
       divider.style.display = 'block';
       total.style.display = 'flex';
 
-      let html = `<div class="summary-item"><span class="summary-item-name">${booking.service.name}</span><span class="summary-item-price">$${booking.service.price}</span></div>`;
-      let mobileHtml = `<div class="mobile-drawer-item"><span class="mobile-drawer-item-name">${booking.service.name}</span><span class="mobile-drawer-item-price">$${booking.service.price}</span></div>`;
+      let html = '';
+      let mobileHtml = '';
 
+      // Add each service
+      booking.services.forEach(item => {
+        const serviceName = item.isBundle ? `${item.service.name} (5-Pack)` : item.service.name;
+        const servicePrice = item.isBundle ? Math.round(item.service.price * 5 * 0.9) : item.service.price;
+        html += `<div class="summary-item"><span class="summary-item-name">${serviceName}</span><span class="summary-item-price">$${servicePrice}</span></div>`;
+        mobileHtml += `<div class="mobile-drawer-item"><span class="mobile-drawer-item-name">${serviceName}</span><span class="mobile-drawer-item-price">$${servicePrice}</span></div>`;
+      });
+
+      // Vehicle adjustment (apply to base price of all services)
       if (booking.vehicleType && booking.vehicleType.multiplier > 1) {
-        const adj = Math.round(booking.service.price * (booking.vehicleType.multiplier - 1));
+        const baseTotal = booking.services.reduce((sum, item) => {
+          return sum + (item.isBundle ? Math.round(item.service.price * 5 * 0.9) : item.service.price);
+        }, 0);
+        const adj = Math.round(baseTotal * (booking.vehicleType.multiplier - 1));
         html += `<div class="summary-item addon"><span class="summary-item-name">${booking.vehicleType.name} adjustment</span><span class="summary-item-price">+$${adj}</span></div>`;
         mobileHtml += `<div class="mobile-drawer-item addon"><span class="mobile-drawer-item-name">${booking.vehicleType.name} adjustment</span><span class="mobile-drawer-item-price">+$${adj}</span></div>`;
       }
@@ -2277,86 +3369,357 @@
 
       const totalPrice = calculateTotal();
       document.getElementById('summaryTotalPrice').textContent = `$${totalPrice}`;
-      document.getElementById('mobileTotalPrice').textContent = `$${totalPrice}`;
+      document.getElementById('bottomBarPrice').textContent = `$${totalPrice}`;
       document.getElementById('paymentTotal').textContent = `$${totalPrice}`;
     }
 
     // Mobile drawer toggle
     function toggleMobileDrawer() {
-      const mobileSummary = document.getElementById('mobileSummary');
+      const drawer = document.getElementById('mobileDrawer');
       const overlay = document.getElementById('mobileOverlay');
-      const isOpen = mobileSummary.classList.contains('drawer-open');
+      const isOpen = drawer.classList.contains('open');
 
       if (isOpen) {
-        mobileSummary.classList.remove('drawer-open');
+        drawer.classList.remove('open');
         overlay.classList.remove('active');
         document.body.style.overflow = '';
       } else {
-        mobileSummary.classList.add('drawer-open');
+        drawer.classList.add('open');
         overlay.classList.add('active');
         document.body.style.overflow = 'hidden';
         lucide.createIcons();
       }
     }
 
+    // Update bottom bar based on current step and selections
+    function updateBottomBar() {
+      const btn = document.getElementById('bottomContinueBtn');
+      const bottomBar = document.getElementById('bottomBar');
+
+      // Check if step is valid for showing continue button
+      let canContinue = false;
+      let buttonText = 'Continue';
+      let buttonIcon = 'chevron-right';
+
+      switch (currentStep) {
+        case 1:
+          canContinue = booking.services.length > 0;
+          break;
+        case 2:
+          canContinue = booking.vehicleType !== null;
+          break;
+        case 3:
+          canContinue = true; // Payment step
+          buttonText = 'Complete Payment';
+          buttonIcon = 'check';
+          break;
+        case 4:
+          canContinue = booking.selectedScheduleService !== null;
+          break;
+        case 5:
+          canContinue = booking.date !== null && booking.time !== null;
+          break;
+        case 6:
+          canContinue = booking.location !== null;
+          buttonText = 'Confirm Appointment';
+          buttonIcon = 'check';
+          break;
+      }
+
+      btn.disabled = !canContinue;
+      btn.innerHTML = `${buttonText} <i data-lucide="${buttonIcon}"></i>`;
+      lucide.createIcons();
+
+      // Hide bottom bar on success screen or congrats overlay
+      if (document.getElementById('successScreen').classList.contains('active') ||
+          document.getElementById('congratsOverlay').classList.contains('active')) {
+        bottomBar.classList.add('hidden');
+      } else {
+        bottomBar.classList.remove('hidden');
+      }
+    }
+
+    // Handle continue button click
+    function handleContinue() {
+      if (currentStep === 3) {
+        // Payment step - show congrats animation
+        showCongratsOverlay();
+      } else if (currentStep === 6) {
+        // Final step - complete booking
+        completeBooking();
+      } else {
+        nextStep();
+      }
+    }
+
+    // Congrats overlay functions
+    function showCongratsOverlay() {
+      const overlay = document.getElementById('congratsOverlay');
+      overlay.classList.add('active');
+      document.getElementById('bottomBar').classList.add('hidden');
+      createConfetti();
+      lucide.createIcons();
+    }
+
+    function closeCongratsAndContinue() {
+      const overlay = document.getElementById('congratsOverlay');
+      overlay.classList.remove('active');
+      // Move to step 4 (Schedule Your Service)
+      currentStep = 4;
+      booking.selectedScheduleService = null;
+      booking.currentScheduleAddons = [];
+      updateProgress();
+      updateStepVisibility();
+      renderPurchasedServices();
+      // Hide add-ons section until service is selected
+      document.getElementById('scheduleAddonsSection').style.display = 'none';
+      updateBottomBar();
+      window.scrollTo(0, 0);
+    }
+
+    function createConfetti() {
+      const confettiContainer = document.getElementById('confetti');
+      confettiContainer.innerHTML = '';
+      const colors = ['#c9a66b', '#d4b896', '#fff', '#b8935a'];
+
+      for (let i = 0; i < 50; i++) {
+        const piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + '%';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDelay = Math.random() * 2 + 's';
+        piece.style.animationDuration = (Math.random() * 2 + 2) + 's';
+        confettiContainer.appendChild(piece);
+      }
+    }
+
+    // Render purchased services for scheduling
+    function renderPurchasedServices() {
+      const container = document.getElementById('purchasedServicesList');
+
+      // Build list of purchased items (services + addons)
+      let purchasedItems = [];
+
+      // Add all purchased services
+      booking.services.forEach((item, index) => {
+        const serviceId = `service-${item.service.id}`;
+        if (item.isBundle) {
+          // For bundles, show each of the 5 as separate schedulable items
+          for (let i = 1; i <= 5; i++) {
+            const bundleItemId = `${serviceId}-${i}`;
+            purchasedItems.push({
+              id: bundleItemId,
+              name: `${item.service.name} (${i}/5)`,
+              details: item.service.duration,
+              scheduled: booking.scheduledServices && booking.scheduledServices[bundleItemId]
+            });
+          }
+        } else {
+          purchasedItems.push({
+            id: serviceId,
+            name: item.service.name,
+            details: item.service.duration,
+            scheduled: booking.scheduledServices && booking.scheduledServices[serviceId]
+          });
+        }
+      });
+
+      // Add addons
+      booking.addons.forEach(addonId => {
+        const addon = addons.find(a => a.id === addonId);
+        if (addon) {
+          purchasedItems.push({
+            id: `addon-${addonId}`,
+            name: addon.name,
+            details: 'Add-on service',
+            scheduled: booking.scheduledServices && booking.scheduledServices[`addon-${addonId}`]
+          });
+        }
+      });
+
+      container.innerHTML = purchasedItems.map(item => `
+        <div class="purchased-service-card ${booking.selectedScheduleService === item.id ? 'selected' : ''}"
+             onclick="selectScheduleService('${item.id}')">
+          <div class="purchased-service-header">
+            <span class="purchased-service-name">${item.name}</span>
+            <div class="purchased-service-check">
+              <i data-lucide="check"></i>
+            </div>
+          </div>
+          <div class="purchased-service-details">${item.details}</div>
+          ${item.scheduled ? `
+            <div class="purchased-service-scheduled">
+              <i data-lucide="calendar-check"></i>
+              <span>Scheduled: ${item.scheduled}</span>
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function selectScheduleService(serviceId) {
+      booking.selectedScheduleService = serviceId;
+      booking.currentScheduleAddons = []; // Reset add-ons when selecting new service
+      renderPurchasedServices();
+      renderScheduleAddons();
+      updateBottomBar();
+    }
+
+    // Render add-ons for scheduling step
+    function renderScheduleAddons() {
+      const section = document.getElementById('scheduleAddonsSection');
+      const container = document.getElementById('scheduleAddonsList');
+
+      if (!booking.selectedScheduleService) {
+        section.style.display = 'none';
+        return;
+      }
+
+      section.style.display = 'block';
+
+      container.innerHTML = addons.map(addon => `
+        <div class="addon-card ${booking.currentScheduleAddons.includes(addon.id) ? 'selected' : ''}"
+             onclick="toggleScheduleAddon('${addon.id}')">
+          <div class="addon-info">
+            <span class="addon-name">${addon.name}</span>
+          </div>
+          <div class="addon-right">
+            <span class="addon-price">+$${addon.price}</span>
+            <div class="addon-check"><i data-lucide="check"></i></div>
+          </div>
+        </div>
+      `).join('');
+
+      lucide.createIcons();
+    }
+
+    function toggleScheduleAddon(addonId) {
+      const index = booking.currentScheduleAddons.indexOf(addonId);
+      if (index >= 0) {
+        booking.currentScheduleAddons.splice(index, 1);
+      } else {
+        booking.currentScheduleAddons.push(addonId);
+      }
+      renderScheduleAddons();
+    }
+
     function calculateTotal() {
-      if (!booking.service) return 0;
-      let total = booking.service.price;
+      if (booking.services.length === 0) return 0;
+
+      // Sum all services (with bundle discount if applicable)
+      let total = booking.services.reduce((sum, item) => {
+        if (item.isBundle) {
+          return sum + Math.round(item.service.price * 5 * 0.9);
+        }
+        return sum + item.service.price;
+      }, 0);
+
+      // Apply vehicle multiplier
       if (booking.vehicleType) {
         total = Math.round(total * booking.vehicleType.multiplier);
       }
+
+      // Add addons
       booking.addons.forEach(addonId => {
         const addon = addons.find(a => a.id === addonId);
         total += addon.price;
       });
+
       return total;
     }
 
     // Navigation
     function nextStep() {
       if (currentStep < 6) {
+        // If leaving step 5 (Date & Time), reset mobile time view state
+        if (currentStep === 5) {
+          resetMobileTimeView();
+        }
         currentStep++;
         updateProgress();
         updateStepVisibility();
+        updateBottomBar();
         window.scrollTo(0, 0);
       }
     }
 
     function prevStep() {
-      if (currentStep > 1) {
+      // Don't allow going back before step 4 (after payment)
+      if (currentStep > 4) {
         currentStep--;
         updateProgress();
         updateStepVisibility();
+        updateBottomBar();
+        // If returning to step 5, reset mobile time view and show calendar
+        if (currentStep === 5) {
+          resetMobileTimeView();
+        }
+        window.scrollTo(0, 0);
+      } else if (currentStep > 1 && currentStep <= 3) {
+        // Can go back during service/vehicle/payment selection
+        currentStep--;
+        updateProgress();
+        updateStepVisibility();
+        updateBottomBar();
         window.scrollTo(0, 0);
       }
     }
 
-    function mobileNextStep() {
-      // Close drawer if open
-      const mobileSummary = document.getElementById('mobileSummary');
-      const overlay = document.getElementById('mobileOverlay');
-      if (mobileSummary.classList.contains('drawer-open')) {
-        mobileSummary.classList.remove('drawer-open');
-        overlay.classList.remove('active');
-        document.body.style.overflow = '';
-      }
-      nextStep();
+    // Reset mobile time view to calendar state
+    function resetMobileTimeView() {
+      const calendarSection = document.getElementById('calendarSection');
+      const mobileTimeView = document.getElementById('mobileTimeView');
+
+      if (calendarSection) calendarSection.classList.remove('hidden-mobile');
+      if (mobileTimeView) mobileTimeView.classList.remove('visible');
     }
 
     function updateProgress() {
       document.querySelectorAll('.progress-step').forEach((step, idx) => {
         const stepNum = idx + 1;
-        step.classList.remove('active', 'completed');
+        step.classList.remove('active', 'completed', 'clickable');
+
         if (stepNum === currentStep) {
           step.classList.add('active');
         } else if (stepNum < currentStep) {
-          step.classList.add('completed');
+          step.classList.add('completed', 'clickable');
         }
+
+        // Add click handler for completed steps
+        step.onclick = () => {
+          if (stepNum < currentStep) {
+            goToStep(stepNum);
+          }
+        };
       });
 
       document.querySelectorAll('.progress-line').forEach((line, idx) => {
         line.classList.toggle('completed', idx < currentStep - 1);
       });
+    }
+
+    function goToStep(stepNum) {
+      // After payment (step 4+), don't allow going back before step 4
+      if (currentStep >= 4 && stepNum < 4) {
+        return;
+      }
+      if (stepNum >= 1 && stepNum < currentStep) {
+        // If leaving step 5 (date/time), reset mobile time view
+        if (currentStep === 5) {
+          resetMobileTimeView();
+        }
+        currentStep = stepNum;
+        updateProgress();
+        updateStepVisibility();
+        updateBottomBar();
+        // If going to step 5, reset mobile time view
+        if (stepNum === 5) {
+          resetMobileTimeView();
+        }
+        window.scrollTo(0, 0);
+      }
     }
 
     function updateStepVisibility() {
@@ -2373,11 +3736,12 @@
       document.getElementById('successScreen').classList.add('active');
       document.getElementById('progressBar').style.display = 'none';
       document.querySelector('.summary').style.display = 'none';
-      document.querySelector('.mobile-summary').style.display = 'none';
+      document.getElementById('bottomBar').classList.add('hidden');
     }
 
     // Init
     init();
+    updateBottomBar();
   </script>
 </body>
 </html>
