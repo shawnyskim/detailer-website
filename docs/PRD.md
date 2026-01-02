@@ -74,7 +74,7 @@ DetailerStack is a white-label SaaS platform that provides car detailing busines
 |---------|----------|--------|
 | Platform-wide metrics (total clients, bookings, revenue) | P0 | Built |
 | Active clients overview | P0 | Built |
-| Recent activity feed | P1 | Built |
+| Recent activity feed | P2 | Built |
 | Quick actions (add client, view alerts) | P1 | Built |
 
 #### 3.1.2 Client Management
@@ -92,9 +92,9 @@ DetailerStack is a white-label SaaS platform that provides car detailing busines
 | Feature | Priority | Status |
 |---------|----------|--------|
 | View available templates | P0 | Built |
-| Template usage statistics | P1 | Built |
-| Upload new template version | P1 | Not Built |
-| Assign template to client | P1 | Not Built |
+| Template usage statistics | P2 | Built |
+| Upload new template version | P0 | Not Built |
+| Assign template to client | P0 | Not Built |
 
 #### 3.1.4 User Management
 | Feature | Priority | Status |

@@ -1271,11 +1271,24 @@
     /* Success State */
     .success-screen {
       display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       text-align: center;
       padding: 3rem 1rem;
+      min-height: 400px;
     }
 
-    .success-screen.active { display: block; }
+    .success-screen.active {
+      display: flex;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: var(--obsidian-950);
+      z-index: 50;
+    }
 
     .success-icon {
       width: 80px;
@@ -1299,6 +1312,12 @@
     .success-message {
       color: var(--obsidian-400);
       margin-bottom: 2rem;
+    }
+
+    .success-btn {
+      display: inline-flex;
+      font-size: 1.1rem;
+      padding: 1rem 2rem;
     }
 
     /* Congrats Overlay */
@@ -1377,6 +1396,7 @@
     }
 
     .congrats-btn {
+      display: inline-flex;
       font-size: 1.1rem;
       padding: 1rem 2rem;
     }
@@ -1489,11 +1509,18 @@
       height: 24px;
       border: 2px solid var(--obsidian-600);
       border-radius: 4px;
-      display: flex;
+      display: none;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
       transition: all 0.2s;
+    }
+
+    /* Only show checkbox on desktop */
+    @media (min-width: 768px) {
+      .service-checkbox {
+        display: flex;
+      }
     }
 
     .service-card.selected .service-checkbox {
@@ -1681,8 +1708,8 @@
     .bundle-add-btn {
       width: 100%;
       padding: 1rem;
-      background: linear-gradient(135deg, #22c55e, #16a34a);
-      color: #fff;
+      background: linear-gradient(135deg, var(--champagne-400), var(--champagne-600));
+      color: var(--obsidian-950);
       border: none;
       border-radius: 8px;
       font-size: 1rem;
@@ -1697,7 +1724,7 @@
 
     .bundle-add-btn:hover {
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+      box-shadow: 0 4px 12px rgba(201, 166, 107, 0.3);
     }
 
     .bundle-skip-btn {
@@ -2607,15 +2634,16 @@
       <!-- Step 4: Schedule Your Service -->
       <div class="step-content" data-step="4">
         <h2 class="step-title">SCHEDULE YOUR SERVICE</h2>
-        <p class="step-subtitle">Select a service to schedule your appointment</p>
+        <p class="step-subtitle">Select a service and any add-ons for this appointment</p>
 
+        <h3 class="addons-title">Select a Service</h3>
         <div id="purchasedServicesList"></div>
 
-        <!-- Add-ons for selected service -->
-        <div id="scheduleAddonsSection" style="display: none;">
-          <h3 class="addons-title" style="margin-top: 2rem;">Add Extras to This Appointment</h3>
-          <p class="step-subtitle" style="margin-bottom: 1rem;">Enhance your service with these add-ons</p>
-          <div id="scheduleAddonsList"></div>
+        <!-- Purchased add-ons section -->
+        <div id="purchasedAddonsSection" style="display: none;">
+          <h3 class="addons-title" style="margin-top: 1.5rem;">Include Purchased Add-ons</h3>
+          <p class="step-subtitle" style="margin-bottom: 1rem;">Select any add-ons to include with this appointment</p>
+          <div id="purchasedAddonsList"></div>
         </div>
       </div>
 
@@ -2706,7 +2734,10 @@
           We've sent a confirmation email to your inbox.<br>
           See you soon!
         </p>
-        <a href="/demo" class="btn-continue">Back to Home</a>
+        <a href="/demo" class="btn-continue success-btn">
+          Manage My Bookings
+          <i data-lucide="chevron-right"></i>
+        </a>
       </div>
 
       <!-- Congrats Overlay (shows after payment) -->
@@ -2875,13 +2906,13 @@
       services: [], // Array of {service, isBundle, quantity}
       vehicleType: null,
       vehicleInfo: {},
-      addons: [], // Pre-purchase add-ons (kept for compatibility)
+      addons: [], // Pre-purchase add-ons (purchased before payment)
       date: null,
       time: null,
       location: null,
       contact: {},
       selectedScheduleService: null,
-      currentScheduleAddons: [], // Add-ons for current service being scheduled
+      selectedPurchasedAddons: [], // Purchased add-ons selected for current appointment
       scheduledServices: {} // {serviceId: {date, time, location, addons: []}}
     };
 
@@ -2982,7 +3013,7 @@
           </div>
           ${inCart ? `
             <button class="service-add-btn" onclick="event.stopPropagation(); showBundleUpsell('${service.id}')">
-              ${isBundle ? 'Bundle Added' : 'Upgrade to 5-Pack'}
+              ${isBundle ? 'Bundle Added ✓' : 'Upgrade to 5-Pack — Save 10%'}
             </button>
           ` : ''}
           <button class="service-expand-btn" onclick="event.stopPropagation(); toggleServiceDetails('${service.id}')">
@@ -3332,10 +3363,13 @@
         return;
       }
 
+      // Hide prices for post-payment steps (4, 5, 6)
+      const hidePrices = currentStep >= 4;
+
       empty.style.display = 'none';
       items.style.display = 'block';
-      divider.style.display = 'block';
-      total.style.display = 'flex';
+      divider.style.display = hidePrices ? 'none' : 'block';
+      total.style.display = hidePrices ? 'none' : 'flex';
 
       let html = '';
       let mobileHtml = '';
@@ -3344,12 +3378,17 @@
       booking.services.forEach(item => {
         const serviceName = item.isBundle ? `${item.service.name} (5-Pack)` : item.service.name;
         const servicePrice = item.isBundle ? Math.round(item.service.price * 5 * 0.9) : item.service.price;
-        html += `<div class="summary-item"><span class="summary-item-name">${serviceName}</span><span class="summary-item-price">$${servicePrice}</span></div>`;
-        mobileHtml += `<div class="mobile-drawer-item"><span class="mobile-drawer-item-name">${serviceName}</span><span class="mobile-drawer-item-price">$${servicePrice}</span></div>`;
+        if (hidePrices) {
+          html += `<div class="summary-item"><span class="summary-item-name">${serviceName}</span><span class="summary-item-price" style="color: var(--champagne-500);">Purchased</span></div>`;
+          mobileHtml += `<div class="mobile-drawer-item"><span class="mobile-drawer-item-name">${serviceName}</span><span class="mobile-drawer-item-price" style="color: var(--champagne-500);">Purchased</span></div>`;
+        } else {
+          html += `<div class="summary-item"><span class="summary-item-name">${serviceName}</span><span class="summary-item-price">$${servicePrice}</span></div>`;
+          mobileHtml += `<div class="mobile-drawer-item"><span class="mobile-drawer-item-name">${serviceName}</span><span class="mobile-drawer-item-price">$${servicePrice}</span></div>`;
+        }
       });
 
-      // Vehicle adjustment (apply to base price of all services)
-      if (booking.vehicleType && booking.vehicleType.multiplier > 1) {
+      // Vehicle adjustment (apply to base price of all services) - only show pre-payment
+      if (!hidePrices && booking.vehicleType && booking.vehicleType.multiplier > 1) {
         const baseTotal = booking.services.reduce((sum, item) => {
           return sum + (item.isBundle ? Math.round(item.service.price * 5 * 0.9) : item.service.price);
         }, 0);
@@ -3358,10 +3397,16 @@
         mobileHtml += `<div class="mobile-drawer-item addon"><span class="mobile-drawer-item-name">${booking.vehicleType.name} adjustment</span><span class="mobile-drawer-item-price">+$${adj}</span></div>`;
       }
 
+      // Add-ons
       booking.addons.forEach(addonId => {
         const addon = addons.find(a => a.id === addonId);
-        html += `<div class="summary-item addon"><span class="summary-item-name">${addon.name}</span><span class="summary-item-price">+$${addon.price}</span></div>`;
-        mobileHtml += `<div class="mobile-drawer-item addon"><span class="mobile-drawer-item-name">${addon.name}</span><span class="mobile-drawer-item-price">+$${addon.price}</span></div>`;
+        if (hidePrices) {
+          html += `<div class="summary-item addon"><span class="summary-item-name">${addon.name}</span><span class="summary-item-price" style="color: var(--champagne-500);">Purchased</span></div>`;
+          mobileHtml += `<div class="mobile-drawer-item addon"><span class="mobile-drawer-item-name">${addon.name}</span><span class="mobile-drawer-item-price" style="color: var(--champagne-500);">Purchased</span></div>`;
+        } else {
+          html += `<div class="summary-item addon"><span class="summary-item-name">${addon.name}</span><span class="summary-item-price">+$${addon.price}</span></div>`;
+          mobileHtml += `<div class="mobile-drawer-item addon"><span class="mobile-drawer-item-name">${addon.name}</span><span class="mobile-drawer-item-price">+$${addon.price}</span></div>`;
+        }
       });
 
       items.innerHTML = html;
@@ -3369,7 +3414,7 @@
 
       const totalPrice = calculateTotal();
       document.getElementById('summaryTotalPrice').textContent = `$${totalPrice}`;
-      document.getElementById('bottomBarPrice').textContent = `$${totalPrice}`;
+      document.getElementById('bottomBarPrice').textContent = hidePrices ? 'Paid' : `$${totalPrice}`;
       document.getElementById('paymentTotal').textContent = `$${totalPrice}`;
     }
 
@@ -3467,12 +3512,13 @@
       // Move to step 4 (Schedule Your Service)
       currentStep = 4;
       booking.selectedScheduleService = null;
-      booking.currentScheduleAddons = [];
+      booking.selectedPurchasedAddons = [];
       updateProgress();
       updateStepVisibility();
       renderPurchasedServices();
+      updateSummary(); // Update summary to hide prices
       // Hide add-ons section until service is selected
-      document.getElementById('scheduleAddonsSection').style.display = 'none';
+      document.getElementById('purchasedAddonsSection').style.display = 'none';
       updateBottomBar();
       window.scrollTo(0, 0);
     }
@@ -3493,11 +3539,11 @@
       }
     }
 
-    // Render purchased services for scheduling
+    // Render purchased services for scheduling (services only, not add-ons)
     function renderPurchasedServices() {
       const container = document.getElementById('purchasedServicesList');
 
-      // Build list of purchased items (services + addons)
+      // Build list of purchased services only
       let purchasedItems = [];
 
       // Add all purchased services
@@ -3524,19 +3570,6 @@
         }
       });
 
-      // Add addons
-      booking.addons.forEach(addonId => {
-        const addon = addons.find(a => a.id === addonId);
-        if (addon) {
-          purchasedItems.push({
-            id: `addon-${addonId}`,
-            name: addon.name,
-            details: 'Add-on service',
-            scheduled: booking.scheduledServices && booking.scheduledServices[`addon-${addonId}`]
-          });
-        }
-      });
-
       container.innerHTML = purchasedItems.map(item => `
         <div class="purchased-service-card ${booking.selectedScheduleService === item.id ? 'selected' : ''}"
              onclick="selectScheduleService('${item.id}')">
@@ -3559,50 +3592,57 @@
       lucide.createIcons();
     }
 
-    function selectScheduleService(serviceId) {
-      booking.selectedScheduleService = serviceId;
-      booking.currentScheduleAddons = []; // Reset add-ons when selecting new service
-      renderPurchasedServices();
-      renderScheduleAddons();
-      updateBottomBar();
-    }
+    // Render purchased add-ons for scheduling (can select multiple)
+    function renderPurchasedAddons() {
+      const section = document.getElementById('purchasedAddonsSection');
+      const container = document.getElementById('purchasedAddonsList');
 
-    // Render add-ons for scheduling step
-    function renderScheduleAddons() {
-      const section = document.getElementById('scheduleAddonsSection');
-      const container = document.getElementById('scheduleAddonsList');
-
-      if (!booking.selectedScheduleService) {
+      // Only show if there are purchased add-ons and a service is selected
+      if (booking.addons.length === 0 || !booking.selectedScheduleService) {
         section.style.display = 'none';
         return;
       }
 
       section.style.display = 'block';
 
-      container.innerHTML = addons.map(addon => `
-        <div class="addon-card ${booking.currentScheduleAddons.includes(addon.id) ? 'selected' : ''}"
-             onclick="toggleScheduleAddon('${addon.id}')">
-          <div class="addon-info">
-            <span class="addon-name">${addon.name}</span>
+      container.innerHTML = booking.addons.map(addonId => {
+        const addon = addons.find(a => a.id === addonId);
+        if (!addon) return '';
+        const isSelected = booking.selectedPurchasedAddons.includes(addonId);
+        return `
+          <div class="addon-card ${isSelected ? 'selected' : ''}"
+               onclick="togglePurchasedAddon('${addonId}')">
+            <div class="addon-info">
+              <span class="addon-name">${addon.name}</span>
+              <span style="font-size: 0.8rem; color: var(--obsidian-400);">Purchased</span>
+            </div>
+            <div class="addon-right">
+              <span class="addon-price" style="color: var(--obsidian-400);">Included</span>
+              <div class="addon-check"><i data-lucide="check"></i></div>
+            </div>
           </div>
-          <div class="addon-right">
-            <span class="addon-price">+$${addon.price}</span>
-            <div class="addon-check"><i data-lucide="check"></i></div>
-          </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
 
       lucide.createIcons();
     }
 
-    function toggleScheduleAddon(addonId) {
-      const index = booking.currentScheduleAddons.indexOf(addonId);
+    function togglePurchasedAddon(addonId) {
+      const index = booking.selectedPurchasedAddons.indexOf(addonId);
       if (index >= 0) {
-        booking.currentScheduleAddons.splice(index, 1);
+        booking.selectedPurchasedAddons.splice(index, 1);
       } else {
-        booking.currentScheduleAddons.push(addonId);
+        booking.selectedPurchasedAddons.push(addonId);
       }
-      renderScheduleAddons();
+      renderPurchasedAddons();
+    }
+
+    function selectScheduleService(serviceId) {
+      booking.selectedScheduleService = serviceId;
+      booking.selectedPurchasedAddons = []; // Reset purchased add-ons selection
+      renderPurchasedServices();
+      renderPurchasedAddons();
+      updateBottomBar();
     }
 
     function calculateTotal() {
